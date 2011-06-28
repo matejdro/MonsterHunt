@@ -10,24 +10,13 @@ import java.sql.Statement;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.util.config.Configuration;
 
 public class InputOutput {
-private MonsterHunt plugin;
 private static Connection connection;
-	public InputOutput(MonsterHunt instance)
-	{
-		plugin = instance;
-		if (!new File("plugins" + File.separator + "MonsterHunt").exists()) {
-			try {
-			(new File("plugins" + File.separator + "MonsterHunt")).mkdir();
-			} catch (Exception e) {
-			MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt]: Unable to create plugins/MontsterHunt/ directory");
-			}
-			}
-		Settings.globals = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
-			
-	}
+	
 	
 	 public static synchronized Connection getConnection() {
 	        try {
@@ -63,7 +52,7 @@ private static Connection connection;
 	        }
 	    }
 	    
-	    public void LoadHighScores()
+	    public static void LoadHighScores()
 	    {
 	    	try {
 				Connection conn = null;
@@ -77,12 +66,12 @@ private static Connection connection;
 				
 				while (set.next())
 				{
-					plugin.highscore.put(set.getString(1), set.getInt(2));
+					MonsterHunt.highscore.put(set.getString(1), set.getInt(2));
 									}
 				
 				set.close();
 				ps.close();
-				MonsterHunt.log.log(Level.INFO,"[MonsterHunt " + plugin.getDescription().getVersion() + "] Loaded " + String.valueOf(plugin.highscore.size()) + " High scores.");
+				MonsterHunt.log.log(Level.INFO,"[MonsterHunt " + MonsterHunt.instance.getDescription().getVersion() + "] Loaded " + String.valueOf(MonsterHunt.highscore.size()) + " High scores.");
 				conn.close();
 	    	} catch (SQLException e) {
 				MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt] Error while loading High scores! - " + e.getMessage());
@@ -92,7 +81,7 @@ private static Connection connection;
 			
 	    }
 	    
-	    public void UpdateHighScore(String playername, int score)
+	    public static void UpdateHighScore(String playername, int score)
 	    {
 	    	try {
 				Connection conn = InputOutput.getConnection();
@@ -110,8 +99,18 @@ private static Connection connection;
 	    }
 
 	
-	public void LoadSettings()
+	public static void LoadSettings()
 	{	
+		if (!new File("plugins" + File.separator + "MonsterHunt").exists()) {
+			try {
+			(new File("plugins" + File.separator + "MonsterHunt")).mkdir();
+			} catch (Exception e) {
+			MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt]: Unable to create plugins/MontsterHunt/ directory");
+			}
+			}
+		Settings.globals = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
+
+		
 		LoadDefaults();
 		
 		if (!new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt").exists()) 
@@ -132,13 +131,20 @@ private static Connection connection;
 					Settings settings = new Settings(config);
 					mw.settings = settings;
 				
-					plugin.worlds.put(n, mw);
+					MonsterHunt.worlds.put(n, mw);
 		}
 		
+		String[] temp = Settings.globals.getString("HuntZone.FirstCorner", "0,0,0").split(",");
+		HuntZone.corner1 = new Location(null, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
+		temp = Settings.globals.getString("HuntZone.SecondCorner", "0,0,0").split(",");
+		HuntZone.corner2 = new Location(null, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
+		temp = Settings.globals.getString("HuntZone.FirstCorner", "0,0,0").split(",");
+		World world = MonsterHunt.instance.getServer().getWorld(Settings.globals.getString("HuntZone.World", MonsterHunt.instance.getServer().getWorlds().get(0).getName()));
+		HuntZone.teleport = new Location(world, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
 		
 	}
 	
-	public void LoadDefaults()
+	public static void LoadDefaults()
 	{
 		Settings.defaults.put("StartTime", 13000);
 		Settings.defaults.put("EndTime", 23600);
@@ -154,11 +160,12 @@ private static Connection connection;
 		Settings.defaults.put("StartChance", 100);
 		Settings.defaults.put("SkipDays", 0);
 		Settings.defaults.put("SignUpPeriodTime", 5);		
-		Settings.defaults.put("EnabledWorlds", plugin.getServer().getWorlds().get(0).getName());
+		Settings.defaults.put("EnabledWorlds", MonsterHunt.instance.getServer().getWorlds().get(0).getName());
 		Settings.defaults.put("OnlyCountMobsSpawnedOutside", false);
 		Settings.defaults.put("OnlyCountMobsSpawnedOutsideHeightLimit", 0);
 		Settings.defaults.put("SkipToIfFailsToStart", -1);
 		Settings.defaults.put("AnnounceLead", true);
+		Settings.defaults.put("SelectionTool", 268);
 		
 		Settings.defaults.put("Rewards.EnableReward", false);
 		Settings.defaults.put("Rewards.EnableRewardEveryonePermission", false);
@@ -210,10 +217,24 @@ private static Connection connection;
 		Settings.defaults.put("Messages.MessageHuntStatusTimeReamining", "Keep up the killing! You have only <Timeleft>% of the night left in this world!");
 		Settings.defaults.put("Messages.MessageLead", "<Player> has just taken over lead with <Points> points!");
 		Settings.defaults.put("Messages.iConomyCurrencyName", "iConomy coin");
-
+		
+		Settings.defaults.put("HuntZone.FirstCorner", "0,0,0");
+		Settings.defaults.put("HuntZone.SecondCorner", "0,0,0");
+		Settings.defaults.put("HuntZone.TeleportLocation", "0,0,0");
+		Settings.defaults.put("HuntZone.World", "world");
+	}
+	
+	public static void saveZone()
+	{
+		Settings.globals.setProperty("HuntZone.FirstCorner", String.valueOf(HuntZone.corner1.getBlockX()) + "," + String.valueOf(HuntZone.corner1.getBlockY()) + "," + String.valueOf(HuntZone.corner1.getBlockZ()));
+		Settings.globals.setProperty("HuntZone.SecondCorner", String.valueOf(HuntZone.corner2.getBlockX()) + "," + String.valueOf(HuntZone.corner2.getBlockY()) + "," + String.valueOf(HuntZone.corner2.getBlockZ()));
+		Settings.globals.setProperty("HuntZone.TeleportLocation", String.valueOf(HuntZone.teleport.getX()) + "," + String.valueOf(HuntZone.teleport.getY()) + "," + String.valueOf(HuntZone.teleport.getZ()));
+		Settings.globals.setProperty("HuntZone.World", HuntZone.teleport.getWorld().getName());
+		
+		Settings.globals.save();
 	}
 		
-	public void PrepareDB()
+	public static void PrepareDB()
     {
         Connection conn = null;
         Statement st = null;

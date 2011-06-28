@@ -99,7 +99,7 @@ public class Settings {
 	public String getKillMessage(String cause)
 	{
 		String setting = "Messages.KillMessage" + cause;
-		MonsterHunt.Debug(setting);
+		Util.Debug(setting);
 		if (config.getProperty(setting) != null)
 		{
 			return config.getString(setting);

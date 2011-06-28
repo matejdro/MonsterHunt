@@ -1,4 +1,4 @@
-package com.matejdro.bukkit.monsterhunt;
+package listeners;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -26,11 +26,15 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.inventory.ItemStack;
 
-public class MonsterHuntEntity extends EntityListener {
+import com.matejdro.bukkit.monsterhunt.MonsterHunt;
+import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
+import com.matejdro.bukkit.monsterhunt.Util;
+
+public class MonsterHuntEntityListener extends EntityListener {
 private MonsterHunt plugin;
 	HashMap<Integer, Player> lastHits = new HashMap<Integer, Player>();
 	HashMap<Integer, Integer> lastHitCauses = new HashMap<Integer, Integer>();
-	public MonsterHuntEntity(MonsterHunt instance)
+	public MonsterHuntEntityListener(MonsterHunt instance)
 	{
 		plugin = instance;
 	}
@@ -119,7 +123,7 @@ private MonsterHunt plugin;
 				double score = world.Score.get(player.getName()) + 0.00;
 				score = score - (score * world.settings.getInt("DeathPenalty") / 100.00);	
 				world.Score.put(player.getName(), (int) Math.round(score));
-				plugin.Message(world.settings.getString("Messages.DeathMessage"),player);
+				Util.Message(world.settings.getString("Messages.DeathMessage"),player);
 			}
 		}
 		
@@ -233,7 +237,7 @@ private MonsterHunt plugin;
 				if (!world.properlyspawned.contains(monster.getEntityId()) && world.settings.getBoolean("OnlyCountMobsSpawnedOutside"))
 				{
 					String message = world.settings.getString("Messages.KillMobSpawnedInsideMessage");
-					plugin.Message(message, player);
+					Util.Message(message, player);
 					world.blacklist.add(monster.getEntityId());
 					return;
 					
@@ -251,9 +255,9 @@ private MonsterHunt plugin;
 						}
 							
 					}
-					plugin.Debug(leadpoints.toString());
-					plugin.Debug(String.valueOf(newscore));
-					plugin.Debug(String.valueOf(!leadpoints.getKey().equals(player.getName())));
+					Util.Debug(leadpoints.toString());
+					Util.Debug(String.valueOf(newscore));
+					Util.Debug(String.valueOf(!leadpoints.getKey().equals(player.getName())));
 										
 					if (leadpoints != null && newscore > leadpoints.getValue() && !leadpoints.getKey().equals(player.getName()))
 					{
@@ -261,7 +265,7 @@ private MonsterHunt plugin;
 						message = message.replace("<Player>", player.getName());
 						message = message.replace("<Points>", String.valueOf(newscore));
 						message = message.replace("<World>", world.name);
-						plugin.Broadcast(message);
+						Util.Broadcast(message);
 						
 					}
 						
@@ -276,7 +280,7 @@ private MonsterHunt plugin;
 				message = message.replace("<MobValue>", String.valueOf(points));
 				message = message.replace("<MobName>", name);
 				message = message.replace("<Points>",String.valueOf(newscore));
-				plugin.Message(message,player);
+				Util.Message(message,player);
 				
 				lastHits.remove(monster.getEntityId());
 				lastHitCauses.remove(monster.getEntityId());

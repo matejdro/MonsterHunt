@@ -15,21 +15,11 @@ import com.iConomy.iConomy;
 import com.iConomy.system.Account;
 import com.iConomy.system.Holdings;
 
-public class Rewards {
+public class RewardManager {
 
-	public MonsterHunt plugin;
-	
-	public Rewards(MonsterHunt instance)
-	{
-		plugin = instance;
-	}
-	
-	public void Reward(MonsterHuntWorld world)
-	{
-		NormalReward(world);
-	}
-	
-	private void NormalReward(MonsterHuntWorld world)
+	private static MonsterHunt plugin = MonsterHunt.instance;
+		
+	public static void RewardWinners(MonsterHuntWorld world)
 	{
 		
 		HashMap<String,Integer>[] Winners = GetWinners(world);
@@ -37,7 +27,7 @@ public class Rewards {
 		{
 			String message = world.settings.getString("Messages.FinishMessageNotEnoughPoints");
 			message = message.replace("<World>", world.name);
-			plugin.Broadcast(message);
+			Util.Broadcast(message);
 			return;
 		}
 		int num = world.settings.getInt("Rewards.NumberOfWinners");
@@ -47,7 +37,7 @@ public class Rewards {
 		{
 			String message = world.settings.getString("Messages.FinishMessageNotEnoughPoints");
 			message = message.replace("<World>", world.name);
-			plugin.Broadcast(message);
+			Util.Broadcast(message);
 			return;
 			
 		}
@@ -60,8 +50,8 @@ public class Rewards {
 				{
 					if (Winners[place].size() < 1) continue;
 					score = Winners[place].get(Winners[place].keySet().toArray()[0]);
-					plugin.Debug(String.valueOf(score));
-					plugin.Debug(String.valueOf(world.settings.getInt("MinimumPointsPlace" + String.valueOf(place + 1))));
+					Util.Debug(String.valueOf(score));
+					Util.Debug(String.valueOf(world.settings.getInt("MinimumPointsPlace" + String.valueOf(place + 1))));
 					if (score < world.settings.getInt("MinimumPointsPlace" + String.valueOf(place + 1))) Winners[place].clear();
 					for (String i : Winners[place].keySet())
 					{
@@ -83,7 +73,7 @@ public class Rewards {
 				RewardString = world.settings.getString("Rewards.RewardParametersEveryone");
 				if (RewardString.contains(";"))
 					RewardString = PickRandom(RewardString);
-				if (world.settings.getBoolean("Rewards.RewardEveryone") || (plugin.permission(player, "monsterhunt.rewardeverytime", false) && world.settings.getBoolean("Rewards.EnableRewardEveryonePermission")))
+				if (world.settings.getBoolean("Rewards.RewardEveryone") || (Util.permission(player, "monsterhunt.rewardeverytime", false) && world.settings.getBoolean("Rewards.EnableRewardEveryonePermission")))
 				{
 					Reward((String) i.getKey(), RewardString, world, (Integer) i.getValue());
 				}
@@ -91,7 +81,7 @@ public class Rewards {
 		}
 		
 		//Broadcast winner message
-		MonsterHunt.Debug("[MonterHunt][DEBUG - NEVEREND]Broadcasting Winners");
+		Util.Debug("[MonterHunt][DEBUG - NEVEREND]Broadcasting Winners");
 		String message;
 		
 			message = world.settings.getString("Messages.FinishMessageWinners");
@@ -120,10 +110,10 @@ public class Rewards {
 
 				
 			}
-		plugin.Broadcast(message);
+		Util.Broadcast(message);
 	}
 	
-	private void Reward(String playerstring, String RewardString, MonsterHuntWorld world, int score)
+	private static void Reward(String playerstring, String RewardString, MonsterHuntWorld world, int score)
 	{
 		String[] split = RewardString.split(",");
 		Player player = plugin.getServer().getPlayer(playerstring);
@@ -131,7 +121,7 @@ public class Rewards {
 		String items = "";
 		for (String i2 : split)
 		{
-			plugin.Debug(i2);
+			Util.Debug(i2);
 			//Parse block ID
 			String BlockIdString = i2.substring(0,i2.indexOf(" "));
 			short data;
@@ -198,11 +188,11 @@ public class Rewards {
 		String message= world.settings.getString("Messages.RewardMessage");
 		items = items.substring(0, items.length() - 2);
 		message =message.replace("<Items>", items);
-		plugin.Message(message, player);
+		Util.Message(message, player);
 
 		
 	}
-	private void iConomyReward(String player, int number)
+	private static void iConomyReward(String player, int number)
 	{		
 		Plugin test = plugin.getServer().getPluginManager().getPlugin("iConomy");
 		if(test != null) {
@@ -215,7 +205,7 @@ public class Rewards {
 			MonsterHunt.log.log(Level.WARNING, "[MonsterHunt]: You have iConomy rewards enabled, but don't hav iConomy installed! Some players may not get their reward!");
 		}
 	}
-	private String PickRandom(String RewardString )
+	private static String PickRandom(String RewardString )
 	{
 		String[] split = RewardString.split(";");
 		int[] chances = new int[split.length];
@@ -269,7 +259,7 @@ public class Rewards {
 		return "";
 		
 	}
-	private HashMap<String,Integer>[] GetWinners(MonsterHuntWorld world)
+	private static HashMap<String,Integer>[] GetWinners(MonsterHuntWorld world)
 	{
 		HashMap<String, Integer> scores = new HashMap<String, Integer>();
 		scores.putAll(world.Score);
@@ -304,7 +294,7 @@ public class Rewards {
 	}
 	
 	// Material name snippet by TechGuard
-	public String getMaterialName(Material material){
+	public static String getMaterialName(Material material){
         String name = material.toString();
         name = name.replaceAll("_", " ");
         if(name.contains(" ")){
@@ -323,7 +313,7 @@ public class Rewards {
         return name;
 }
 	//add item color by fabe
-	public void addItemFix(Player players, int ID, int amount, short dur) {
+	public static void addItemFix(Player players, int ID, int amount, short dur) {
 		if (players.getInventory().firstEmpty() == -1)
 		{
 			players.getLocation().getWorld().dropItem(players.getLocation(), new ItemStack(ID, amount, dur));
