@@ -1,0 +1,19 @@
+name: MonsterHunt
+main: com.matejdro.bukkit.monsterhunt.MonsterHunt
+version: 1.2.0
+commands:
+    hunt:
+        description: Sign up for the hunt.
+    huntstatus:
+        description: Check the hunt status
+    huntscore:
+        description: Check your current high score
+    huntstart:
+        description: Start hunt manually.
+    huntstop:
+        description: Stop hunt manually
+    hunt:
+        description: Sign up for the hunt.
+    hunt:
+        description: Sign up for the hunt.
+
