@@ -1,4 +1,4 @@
-package listeners;
+package com.matejdro.bukkit.monsterhunt.listeners;
 
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;

@@ -1,15 +1,41 @@
 package com.matejdro.bukkit.monsterhunt;
 
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+
 
 public class HuntWorldManager {
+	public static MonsterHuntWorld HuntZoneWorld;
+	public static HashMap<String,MonsterHuntWorld> worlds = new HashMap<String,MonsterHuntWorld>();
 	
-
+	public static MonsterHuntWorld getWorld(String name)
+	{
+		if (Settings.globals.getBoolean("HuntZoneMode", false))
+			return HuntZoneWorld;
+		else
+			return worlds.get(name);
+	}
+	
+	public static Collection<MonsterHuntWorld> getWorlds()
+	{
+		if (Settings.globals.getBoolean("HuntZoneMode", false))
+		{
+			ArrayList<MonsterHuntWorld> list = new ArrayList<MonsterHuntWorld>();
+			list.add(HuntZoneWorld);
+			return list;
+		}
+		else
+			return worlds.values();
+	}
+	
 	public static void timer()
 	{
 		MonsterHunt.instance.getServer().getScheduler().scheduleSyncRepeatingTask(MonsterHunt.instance, new Runnable() {
 
 		    public void run() {
-		    	for (MonsterHuntWorld world : MonsterHunt.worlds.values())
+		    	for (MonsterHuntWorld world : getWorlds())
 		    	  {
 		    		  if (world == null || world.getWorld() == null) return;
 		    		  long time = world.getWorld().getTime();
@@ -57,7 +83,7 @@ public class HuntWorldManager {
 		    	      else if(world.state == 2 && (time > world.settings.getInt("EndTime") || time < world.settings.getInt("StartTime")) && !world.manual)
 		    	      {
 		    	    	  Util.Debug("[MonterHunt][DEBUG - NEVEREND]Stop Time");
-		    	    	 world.start();
+		    	    	 world.stop();
 		    	      }
 		    	      else if(world.waitday && (time > world.settings.getInt("EndTime") || time < world.settings.getInt("StartTime") - world.getSignUpPeriodTime()) )
 		    	      {

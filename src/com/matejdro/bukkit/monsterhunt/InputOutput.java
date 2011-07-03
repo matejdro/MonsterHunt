@@ -131,7 +131,7 @@ private static Connection connection;
 					Settings settings = new Settings(config);
 					mw.settings = settings;
 				
-					MonsterHunt.worlds.put(n, mw);
+					HuntWorldManager.worlds.put(n, mw);
 		}
 		
 		String[] temp = Settings.globals.getString("HuntZone.FirstCorner", "0,0,0").split(",");
@@ -141,6 +141,14 @@ private static Connection connection;
 		temp = Settings.globals.getString("HuntZone.FirstCorner", "0,0,0").split(",");
 		World world = MonsterHunt.instance.getServer().getWorld(Settings.globals.getString("HuntZone.World", MonsterHunt.instance.getServer().getWorlds().get(0).getName()));
 		HuntZone.teleport = new Location(world, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
+		
+		//Create zone world
+		MonsterHuntWorld mw = new MonsterHuntWorld(world.getName());
+		Configuration config = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator + "zone.yml"));
+		Settings settings = new Settings(config);
+		mw.settings = settings;
+	
+		HuntWorldManager.HuntZoneWorld = mw;
 		
 	}
 	
@@ -166,6 +174,7 @@ private static Connection connection;
 		Settings.defaults.put("SkipToIfFailsToStart", -1);
 		Settings.defaults.put("AnnounceLead", true);
 		Settings.defaults.put("SelectionTool", 268);
+		Settings.defaults.put("HuntZoneMode", false);
 		
 		Settings.defaults.put("Rewards.EnableReward", false);
 		Settings.defaults.put("Rewards.EnableRewardEveryonePermission", false);

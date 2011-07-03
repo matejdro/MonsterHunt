@@ -1,4 +1,4 @@
-package listeners;
+package com.matejdro.bukkit.monsterhunt.listeners;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -26,6 +26,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.inventory.ItemStack;
 
+import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
+import com.matejdro.bukkit.monsterhunt.HuntZone;
 import com.matejdro.bukkit.monsterhunt.MonsterHunt;
 import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
 import com.matejdro.bukkit.monsterhunt.Util;
@@ -62,7 +64,7 @@ private MonsterHunt plugin;
 				}
 				return;
 			}
-		MonsterHuntWorld world = plugin.worlds.get(eventek.getDamager().getWorld().getName());
+		MonsterHuntWorld world = HuntWorldManager.getWorld(eventek.getDamager().getWorld().getName());
 
 		if (world == null || world.getWorld() == null) return;
 		
@@ -113,7 +115,7 @@ private MonsterHunt plugin;
 		if (event.getEntity() instanceof Player)
 		{
 			Player player = (Player) event.getEntity();
-			MonsterHuntWorld world = plugin.worlds.get(player.getWorld().getName());
+			MonsterHuntWorld world = HuntWorldManager.getWorld(player.getWorld().getName());
 			
 			if (world == null || world.getWorld() == null) return;
 			if (world.settings.getInt("DeathPenalty") == 0) return;
@@ -126,14 +128,14 @@ private MonsterHunt plugin;
 				Util.Message(world.settings.getString("Messages.DeathMessage"),player);
 			}
 		}
-		
+		if (!HuntZone.isInsideZone(event.getEntity().getLocation())) return;
 		if (lastHits.containsKey(event.getEntity().getEntityId()))
 			{
 
 					if (event.getEntity() == null) return;
 					
 					Player killer = lastHits.get(event.getEntity().getEntityId());
-					MonsterHuntWorld world = plugin.worlds.get(event.getEntity().getWorld().getName());
+					MonsterHuntWorld world = HuntWorldManager.getWorld(event.getEntity().getWorld().getName());
 					if (world == null || world.getWorld() == null) return;
 					
 					if (killer != null) kill(killer, (LivingEntity) event.getEntity(), world);
@@ -290,7 +292,7 @@ private MonsterHunt plugin;
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (event.getEntity() instanceof Creature)
 		{
-			MonsterHuntWorld world = plugin.worlds.get(event.getLocation().getWorld().getName());
+			MonsterHuntWorld world = HuntWorldManager.getWorld(event.getLocation().getWorld().getName());
 			if (world == null || world.getWorld() == null) return;
 			if (world.state == 0) return;
 			if (!world.settings.getBoolean("OnlyCountMobsSpawnedOutside")) return;
