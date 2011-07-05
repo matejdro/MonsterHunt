@@ -35,7 +35,7 @@ private static Connection connection;
 	        try {
 	            if (Settings.globals.getBoolean("Database.UseMySQL", false)) {
 	                Class.forName("com.mysql.jdbc.Driver");
-	                Connection ret = DriverManager.getConnection(Settings.globals.getString("Database.MySqlconn", ""), Settings.globals.getString("Database.MySqlUsername", ""), Settings.globals.getString("Database.MySqlPassword", ""));
+	                Connection ret = DriverManager.getConnection(Settings.globals.getString("Database.MySQLConn", ""), Settings.globals.getString("Database.MySQLUsername", ""), Settings.globals.getString("Database.MySQLPassword", ""));
 	                ret.setAutoCommit(false);
 	                return ret;
 	            } else {

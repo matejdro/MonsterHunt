@@ -55,7 +55,7 @@ public class MonsterHunt extends JavaPlugin {
 	getServer().getPluginManager().registerEvent(Event.Type.CREATURE_SPAWN, EntityListener, Event.Priority.Monitor, this);
 	getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, PlayerListener, Event.Priority.Monitor, this);
 	log.log(Level.INFO, "[MonsterHunt] MonsterHunt Loaded!");
-
+	
 	permissions = this.getServer().getPluginManager().getPlugin("Permissions");
 	
 	commands.put("huntstart", new HuntStartCommand());
