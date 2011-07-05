@@ -1,6 +1,5 @@
 package com.matejdro.bukkit.monsterhunt.listeners;
 
-import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.Material;
@@ -21,10 +20,8 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
-import org.bukkit.inventory.ItemStack;
 
 import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
 import com.matejdro.bukkit.monsterhunt.HuntZone;
@@ -34,82 +31,13 @@ import com.matejdro.bukkit.monsterhunt.Util;
 
 public class MonsterHuntEntityListener extends EntityListener {
 private MonsterHunt plugin;
-	HashMap<Integer, Player> lastHits = new HashMap<Integer, Player>();
-	HashMap<Integer, Integer> lastHitCauses = new HashMap<Integer, Integer>();
+	//HashMap<Integer, Player> lastHits = new HashMap<Integer, Player>();
+	//HashMap<Integer, Integer> lastHitCauses = new HashMap<Integer, Integer>();
 	public MonsterHuntEntityListener(MonsterHunt instance)
 	{
 		plugin = instance;
 	}
 	
-	public void onEntityDamage(EntityDamageEvent event) {
-		if (event.isCancelled()) return;
-
-		if (!(event instanceof EntityDamageByEntityEvent)) 
-		{
-			if (event.getEntity() != null && event.getEntity() instanceof LivingEntity)
-			{
-				lastHits.remove(event.getEntity().getEntityId());
-				lastHitCauses.remove(event.getEntity().getEntityId());
-			}
-			return;
-		}
-		
-		EntityDamageByEntityEvent eventek = (EntityDamageByEntityEvent) event;
-		if (eventek.getDamager() == null) 
-			{
-				if (event.getEntity() != null && event.getEntity() instanceof LivingEntity)
-				{
-					lastHits.remove(eventek.getEntity().getEntityId());
-					lastHitCauses.remove(eventek.getEntity().getEntityId());
-				}
-				return;
-			}
-		MonsterHuntWorld world = HuntWorldManager.getWorld(eventek.getDamager().getWorld().getName());
-
-		if (world == null || world.getWorld() == null) return;
-		
-
-		if (eventek.getEntity() instanceof LivingEntity && (eventek.getDamager() instanceof Player || eventek.getDamager() instanceof Wolf) && world.state == 2)
-		{
-
-			Player killer;
-			int cause;
-			if (eventek.getDamager() instanceof Wolf)
-			{
-				Wolf wolf = (Wolf) eventek.getDamager();
-				if (!wolf.isTamed()) 
-					{
-						lastHits.remove(eventek.getEntity().getEntityId());
-						lastHitCauses.remove(eventek.getEntity().getEntityId());
-						return;
-					}
-				killer = (Player) wolf.getOwner();
-				cause = -2;
-			}
-			else
-			{
-				killer = (Player) eventek.getDamager();
-				ItemStack hand = killer.getItemInHand();
-				if (hand == null)
-					cause = 0;
-				else
-					cause = hand.getTypeId();
-			}
-			
-			
-			if (event instanceof EntityDamageByProjectileEvent) 
-			{
-				cause = -1;
-			}
-				lastHits.put(eventek.getEntity().getEntityId(), killer);	
-				lastHitCauses.put(eventek.getEntity().getEntityId(), cause);
-		}
-		else if (event.getEntity() != null && event.getEntity() instanceof LivingEntity)
-		{
-			lastHits.remove(event.getEntity().getEntityId());
-			lastHitCauses.remove(event.getEntity().getEntityId());
-		}
-    }
 		
 	public void onEntityDeath (EntityDeathEvent event) {
 		if (event.getEntity() instanceof Player)
@@ -129,32 +57,45 @@ private MonsterHunt plugin;
 			}
 		}
 		if (!HuntZone.isInsideZone(event.getEntity().getLocation())) return;
-		if (lastHits.containsKey(event.getEntity().getEntityId()))
-			{
-
-					if (event.getEntity() == null) return;
+					if (event.getEntity() == null || !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
 					
-					Player killer = lastHits.get(event.getEntity().getEntityId());
 					MonsterHuntWorld world = HuntWorldManager.getWorld(event.getEntity().getWorld().getName());
 					if (world == null || world.getWorld() == null) return;
 					
-					if (killer != null) kill(killer, (LivingEntity) event.getEntity(), world);
-					
+					kill((LivingEntity) event.getEntity(), world);
 			}
-	}
 	
-	private void kill(Player player, LivingEntity monster, MonsterHuntWorld world)
+	
+	private void kill(LivingEntity monster, MonsterHuntWorld world)
 	{
+			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) monster.getLastDamageCause();
 			String name;
-			
+			Player player = null;
+
 			String cause = "General";
-			int causenum = lastHitCauses.get(monster.getEntityId());
-			if (causenum == -1)
+			if (event instanceof EntityDamageByProjectileEvent)
+			{
 				cause = "Arrow";
-			else if (causenum == -2)
+			}
+			else if (event.getDamager() instanceof Wolf && ((Wolf) event.getDamager()).isTamed())
+			{
 				cause = "Wolf";
-			else 
-				cause = String.valueOf(causenum);
+				player = (Player) ((Wolf) event.getDamager()).getOwner();
+			}
+			
+			if (player == null) 
+			{
+				if (!(event.getDamager() instanceof Player)) return;
+				player = (Player) event.getDamager();
+			
+				if (cause.equals("General"))
+				{
+					if (player.getItemInHand() == null)
+						cause = String.valueOf(0);
+					else
+						cause = String.valueOf(player.getItemInHand().getTypeId());
+				}
+			}
 			
 			int points = 0;
 			if (monster instanceof Skeleton)
@@ -283,10 +224,7 @@ private MonsterHunt plugin;
 				message = message.replace("<MobName>", name);
 				message = message.replace("<Points>",String.valueOf(newscore));
 				Util.Message(message,player);
-				
-				lastHits.remove(monster.getEntityId());
-				lastHitCauses.remove(monster.getEntityId());
-			}
+				}
 	}
 	
 	public void onCreatureSpawn(CreatureSpawnEvent event) {

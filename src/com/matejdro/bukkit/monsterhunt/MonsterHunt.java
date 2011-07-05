@@ -8,7 +8,6 @@ import javax.swing.Timer;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +18,8 @@ import com.matejdro.bukkit.monsterhunt.commands.HuntScoreCommand;
 import com.matejdro.bukkit.monsterhunt.commands.HuntStartCommand;
 import com.matejdro.bukkit.monsterhunt.commands.HuntStatusCommand;
 import com.matejdro.bukkit.monsterhunt.commands.HuntStopCommand;
+import com.matejdro.bukkit.monsterhunt.commands.HuntTeleCommand;
+import com.matejdro.bukkit.monsterhunt.commands.HuntZoneCommand;
 import com.matejdro.bukkit.monsterhunt.listeners.MonsterHuntEntityListener;
 import com.matejdro.bukkit.monsterhunt.listeners.MonsterHuntPlayerListener;
 
@@ -28,7 +29,7 @@ public class MonsterHunt extends JavaPlugin {
 	private MonsterHuntPlayerListener PlayerListener;
 	Timer timer;
 	
-	public static HashMap<String,Integer> highscore = new HashMap<String,Integer>();
+	//public static HashMap<String,Integer> highscore = new HashMap<String,Integer>();
 	
 	public static Plugin permissions = null;
 	
@@ -49,9 +50,8 @@ public class MonsterHunt extends JavaPlugin {
 		
 	InputOutput.LoadSettings();
 	InputOutput.PrepareDB();
-	if (Settings.globals.getBoolean("EnableHighScores", false)) InputOutput.LoadHighScores();
+	//if (Settings.globals.getBoolean("EnableHighScores", false)) InputOutput.LoadHighScores();
 		
-	getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DAMAGE, EntityListener, Event.Priority.Monitor, this);
 	getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, EntityListener, Event.Priority.Monitor, this);
 	getServer().getPluginManager().registerEvent(Event.Type.CREATURE_SPAWN, EntityListener, Event.Priority.Monitor, this);
 	getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, PlayerListener, Event.Priority.Monitor, this);
@@ -64,6 +64,8 @@ public class MonsterHunt extends JavaPlugin {
 	commands.put("hunt", new HuntCommand());
 	commands.put("huntscore", new HuntScoreCommand());
 	commands.put("huntstatus", new HuntStatusCommand());
+	commands.put("huntzone", new HuntZoneCommand());
+	commands.put("hunttele", new HuntTeleCommand());
 	
 	HuntWorldManager.timer();
 

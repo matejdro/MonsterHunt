@@ -16,4 +16,5 @@ commands:
         description: Sign up for the hunt.
     huntzone:
         description: Select hunt zone.
-
+    hunttele:
+        description: Teleport to the hunt zone

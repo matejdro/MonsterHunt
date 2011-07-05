@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -52,33 +53,135 @@ private static Connection connection;
 	        }
 	    }
 	    
-	    public static void LoadHighScores()
+//	    public static void LoadHighScores()
+//	    {
+//	    	try {
+//				Connection conn = null;
+//				PreparedStatement ps = null;
+//				ResultSet set = null;
+//				
+//				conn = getConnection();
+//				ps = conn.prepareStatement("SELECT * FROM monsterhunt_highscores");
+//				set = ps.executeQuery();
+//				//conn.commit();
+//				
+//				while (set.next())
+//				{
+//					MonsterHunt.highscore.put(set.getString(1), set.getInt(2));
+//									}
+//				
+//				set.close();
+//				ps.close();
+//				MonsterHunt.log.log(Level.INFO,"[MonsterHunt " + MonsterHunt.instance.getDescription().getVersion() + "] Loaded " + String.valueOf(MonsterHunt.highscore.size()) + " High scores.");
+//				conn.close();
+//	    	} catch (SQLException e) {
+//				MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt] Error while loading High scores! - " + e.getMessage());
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//	    }
+	    
+	    public static Integer getHighScore(String player)
 	    {
+	    	Connection conn = getConnection();
+	    	PreparedStatement ps = null;
+			ResultSet set = null;
+			Integer score = null;
+			
 	    	try {
-				Connection conn = null;
-				PreparedStatement ps = null;
-				ResultSet set = null;
-				
-				conn = getConnection();
-				ps = conn.prepareStatement("SELECT * FROM monsterhunt_highscores");
-				set = ps.executeQuery();
-				//conn.commit();
-				
-				while (set.next())
-				{
-					MonsterHunt.highscore.put(set.getString(1), set.getInt(2));
-									}
-				
-				set.close();
-				ps.close();
-				MonsterHunt.log.log(Level.INFO,"[MonsterHunt " + MonsterHunt.instance.getDescription().getVersion() + "] Loaded " + String.valueOf(MonsterHunt.highscore.size()) + " High scores.");
-				conn.close();
+				ps = conn.prepareStatement("SELECT * FROM monsterhunt_highscores WHERE name = ? LIMIT 1");
+			
+            ps.setString(1, player);
+            set = ps.executeQuery();
+            
+            if (set.next())
+            	score = set.getInt("highscore");
+            
+            set.close();
+            ps.close();
+            conn.close();
 	    	} catch (SQLException e) {
-				MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt] Error while loading High scores! - " + e.getMessage());
+	    		MonsterHunt.log.log(Level.SEVERE,"[MonsterHunt] Error while retreiving high scores! - " + e.getMessage() );
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+            return score;
+            
+	    }
+	    
+	    public static Integer getHighScoreRank(String player)
+	    {
+	    	Connection conn = getConnection();
+	    	PreparedStatement ps = null;
+			ResultSet set = null;
+			Boolean exist = false;
+            Integer counter = 0;
+            
+	    	try {
+				ps = conn.prepareStatement("SELECT * FROM monsterhunt_highscores ORDER BY highscore DESC");
 			
+            set = ps.executeQuery();
+            
+            
+            while (set.next())
+            {
+            	counter++;
+            	String name = set.getString("name");
+            	if (name.equals(player))
+            	{
+            		exist = true;
+            		break;
+            	}
+            }
+            
+            set.close();
+            ps.close();
+            conn.close();
+            
+	    	} catch (SQLException e) {
+	    		MonsterHunt.log.log(Level.SEVERE,"[MonsterHunt] Error while retreiving high scores! - " + e.getMessage() );
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	if (exist)
+            	return counter;
+            else
+            	return null;
+	    }
+	    
+	    public static LinkedHashMap<String, Integer> getTopScores(int number)
+	    {
+	    	Connection conn = getConnection();
+	    	PreparedStatement ps = null;
+			ResultSet set = null;
+			LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
+            
+	    	try {
+				ps = conn.prepareStatement("SELECT * FROM monsterhunt_highscores ORDER BY highscore DESC LIMIT ?");
+				ps.setInt(1, number);
+				
+	            set = ps.executeQuery();
+	            
+	            
+	            while (set.next())
+	            {
+	            	
+	            	String name = set.getString("name");
+	            	Integer score = set.getInt("highscore");
+	            	map.put(name, score);
+	            }
+	            
+	            set.close();
+	            ps.close();
+	            conn.close();
+            
+	    	} catch (SQLException e) {
+	    		MonsterHunt.log.log(Level.SEVERE,"[MonsterHunt] Error while retreiving high scores! - " + e.getMessage() );
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	return map;
 	    }
 	    
 	    public static void UpdateHighScore(String playername, int score)
@@ -91,6 +194,7 @@ private static Connection connection;
 				ps.executeUpdate();
 				conn.commit();
 				ps.close();
+				conn.close();
 			} catch (SQLException e) {
 				MonsterHunt.log.log(Level.SEVERE,"[MonsterHunt] Error while inserting new high score into DB! - " + e.getMessage() );
 				// TODO Auto-generated catch block
@@ -138,7 +242,7 @@ private static Connection connection;
 		HuntZone.corner1 = new Location(null, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
 		temp = Settings.globals.getString("HuntZone.SecondCorner", "0,0,0").split(",");
 		HuntZone.corner2 = new Location(null, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
-		temp = Settings.globals.getString("HuntZone.FirstCorner", "0,0,0").split(",");
+		temp = Settings.globals.getString("HuntZone.TeleportLocation", "0,0,0").split(",");
 		World world = MonsterHunt.instance.getServer().getWorld(Settings.globals.getString("HuntZone.World", MonsterHunt.instance.getServer().getWorlds().get(0).getName()));
 		HuntZone.teleport = new Location(world, Double.parseDouble(temp[0]), Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
 		
@@ -167,7 +271,8 @@ private static Connection connection;
 		Settings.defaults.put("MinimumPlayers", 2);
 		Settings.defaults.put("StartChance", 100);
 		Settings.defaults.put("SkipDays", 0);
-		Settings.defaults.put("SignUpPeriodTime", 5);		
+		Settings.defaults.put("SignUpPeriodTime", 5);
+		Settings.defaults.put("AllowSignUpAfterHuntStart", false);
 		Settings.defaults.put("EnabledWorlds", MonsterHunt.instance.getServer().getWorlds().get(0).getName());
 		Settings.defaults.put("OnlyCountMobsSpawnedOutside", false);
 		Settings.defaults.put("OnlyCountMobsSpawnedOutsideHeightLimit", 0);
@@ -215,6 +320,7 @@ private static Connection connection;
 		Settings.defaults.put("Messages.FinishMessageNotEnoughPlayers", "Sun is rising, so monster Hunt is finished in world <World>! Unfortunately there were not enough players participating, so there is no winner.");
 		Settings.defaults.put("Messages.MessageSignUpPeriod", "Sharpen your swords, strengthen your armor and type /hunt, because Monster Hunt will begin in several mintues in world <World>!");
 		Settings.defaults.put("Messages.MessageTooLateSignUp", "Sorry, you are too late to sign up. More luck next time!");
+		Settings.defaults.put("Messages.MessageAlreadySignedUp", "You are already signed up!");
 		Settings.defaults.put("Messages.MessageStartNotEnoughPlayers", "Monster Hunt was about to start, but unfortunately there were not enough players signed up. ");
 		Settings.defaults.put("Messages.KillMobSpawnedInsideMessage", "Your kill was not counted. Stop grinding in caves and go outside!");
 		Settings.defaults.put("Messages.MessageHuntStatusNotActive", "Hunt is currently not active anywhere");
@@ -225,8 +331,9 @@ private static Connection connection;
 		Settings.defaults.put("Messages.MessageHuntStatusCurrentScore", "Your current score in this world's hunt is <Points> points! Keep it up!");
 		Settings.defaults.put("Messages.MessageHuntStatusTimeReamining", "Keep up the killing! You have only <Timeleft>% of the night left in this world!");
 		Settings.defaults.put("Messages.MessageLead", "<Player> has just taken over lead with <Points> points!");
-		Settings.defaults.put("Messages.iConomyCurrencyName", "iConomy coin");
-		
+		Settings.defaults.put("Messages.MessageHuntTeleNoHunt", "You cannot teleport to hunt zone when there is no hunt!");
+		Settings.defaults.put("Messages.MessageHuntTeleNotSignedUp", "You cannot teleport to hunt zone if you are not signed up to the hunt!");
+
 		Settings.defaults.put("HuntZone.FirstCorner", "0,0,0");
 		Settings.defaults.put("HuntZone.SecondCorner", "0,0,0");
 		Settings.defaults.put("HuntZone.TeleportLocation", "0,0,0");

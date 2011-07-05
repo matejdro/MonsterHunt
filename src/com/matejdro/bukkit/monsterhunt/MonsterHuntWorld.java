@@ -2,9 +2,11 @@ package com.matejdro.bukkit.monsterhunt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -21,6 +23,7 @@ public class MonsterHuntWorld {
 	public HashMap<String,Integer> lastScore = new HashMap<String,Integer>();
 	public ArrayList<Integer> properlyspawned = new ArrayList<Integer>();
 	public ArrayList<Integer> blacklist = new ArrayList<Integer>();
+	public HashMap<Player, Location> tplocations = new HashMap<Player, Location>();
 	
 	public MonsterHuntWorld(String w)
 	{
@@ -75,16 +78,22 @@ public class MonsterHuntWorld {
 		{
 			RewardManager.RewardWinners(this);
 		}
+		for (Entry<Player, Location> e : tplocations.entrySet())
+		{
+			Player player = e.getKey();
+			if (player == null || !player.isOnline()) continue;
+			player.teleport(e.getValue());
+		}
 		state = 0;
 		if (Settings.globals.getBoolean("EnableHighScores", false))
 		{
 			for (String i : Score.keySet())
 			{
-				int hs = MonsterHunt.highscore.containsKey(i) ? MonsterHunt.highscore.get(i) : 0;
+				Integer hs = InputOutput.getHighScore(i);
+				if (hs == null) hs = 0;
 				int score = Score.get(i);
 				if (score > hs)
 				{
-					MonsterHunt.highscore.put(i,score);
 					InputOutput.UpdateHighScore(i, score);
 					Player player = MonsterHunt.instance.getServer().getPlayer(i);
 					if (player != null) 

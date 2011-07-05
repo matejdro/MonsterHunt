@@ -1,6 +1,5 @@
 package com.matejdro.bukkit.monsterhunt;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

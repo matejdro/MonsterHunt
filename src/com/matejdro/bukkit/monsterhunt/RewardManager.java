@@ -173,8 +173,8 @@ public class RewardManager {
 			//give reward
 			if (BlockId == 0)
 			{
-				iConomyReward(playerstring,amount);
-				if (amount > 0) items += String.valueOf(amount) + "x " + world.settings.getString("Messages.iConomyCurrencyName") + ", "; 
+				String item = iConomyReward(playerstring,amount);
+				if (amount > 0) items += item + ", "; 
 
 			}
 			else
@@ -192,17 +192,18 @@ public class RewardManager {
 
 		
 	}
-	private static void iConomyReward(String player, int number)
+	private static String iConomyReward(String player, int number)
 	{		
 		Plugin test = plugin.getServer().getPluginManager().getPlugin("iConomy");
 		if(test != null) {
 			iConomy iConomy = (iConomy) test;
 			Account account = iConomy.getAccount(player);
-			if (account == null) return;
 			Holdings balance = account.getHoldings();
 			balance.add(number);
+			return iConomy.format(number);
 		} else {
 			MonsterHunt.log.log(Level.WARNING, "[MonsterHunt]: You have iConomy rewards enabled, but don't hav iConomy installed! Some players may not get their reward!");
+			return "";
 		}
 	}
 	private static String PickRandom(String RewardString )
