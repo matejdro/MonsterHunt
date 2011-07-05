@@ -50,7 +50,6 @@ public class MonsterHunt extends JavaPlugin {
 		
 	InputOutput.LoadSettings();
 	InputOutput.PrepareDB();
-	//if (Settings.globals.getBoolean("EnableHighScores", false)) InputOutput.LoadHighScores();
 		
 	getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, EntityListener, Event.Priority.Monitor, this);
 	getServer().getPluginManager().registerEvent(Event.Type.CREATURE_SPAWN, EntityListener, Event.Priority.Monitor, this);

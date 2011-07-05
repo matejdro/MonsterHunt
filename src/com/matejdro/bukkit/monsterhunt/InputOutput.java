@@ -52,36 +52,7 @@ private static Connection connection;
 	            return null;
 	        }
 	    }
-	    
-//	    public static void LoadHighScores()
-//	    {
-//	    	try {
-//				Connection conn = null;
-//				PreparedStatement ps = null;
-//				ResultSet set = null;
-//				
-//				conn = getConnection();
-//				ps = conn.prepareStatement("SELECT * FROM monsterhunt_highscores");
-//				set = ps.executeQuery();
-//				//conn.commit();
-//				
-//				while (set.next())
-//				{
-//					MonsterHunt.highscore.put(set.getString(1), set.getInt(2));
-//									}
-//				
-//				set.close();
-//				ps.close();
-//				MonsterHunt.log.log(Level.INFO,"[MonsterHunt " + MonsterHunt.instance.getDescription().getVersion() + "] Loaded " + String.valueOf(MonsterHunt.highscore.size()) + " High scores.");
-//				conn.close();
-//	    	} catch (SQLException e) {
-//				MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt] Error while loading High scores! - " + e.getMessage());
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//	    }
-	    
+	    	    
 	    public static Integer getHighScore(String player)
 	    {
 	    	Connection conn = getConnection();

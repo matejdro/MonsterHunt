@@ -18,8 +18,6 @@ public class HuntScoreCommand extends BaseCommand {
 
 
 	public Boolean run(CommandSender sender, String[] args) {	
-		
-		
 		if (args.length > 0 && args[0].equals("rank"))
 		{
 			Integer rank = InputOutput.getHighScoreRank(((Player) sender).getName());
