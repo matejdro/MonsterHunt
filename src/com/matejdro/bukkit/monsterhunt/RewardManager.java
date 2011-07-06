@@ -230,7 +230,7 @@ public class RewardManager {
 		
 		if (totalchances > (100 - numnochances))
 		{
-			plugin.log.warning("[MonsterHunt]Invalid Rewards configuration! MonsterHunt will now throw error and disable itself.");
+			plugin.log.warning("[MonsterHunt]Invalid Rewards configuration! Sum of all percentages should be exactly 100! MonsterHunt will now throw error and disable itself.");
 			plugin.getPluginLoader().disablePlugin(plugin);
 			return null;
 		}

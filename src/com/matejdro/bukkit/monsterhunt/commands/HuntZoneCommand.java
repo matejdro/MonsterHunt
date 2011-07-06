@@ -10,7 +10,7 @@ public class HuntZoneCommand extends BaseCommand {
 	public HuntZoneCommand()
 	{
 		needPlayer = true;
-		permission = "monsterhunt.command.huntzone";
+		permission = "monsterhunt.admincmd.huntzone";
 	}
 
 

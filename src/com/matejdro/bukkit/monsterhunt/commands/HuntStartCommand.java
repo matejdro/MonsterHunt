@@ -12,14 +12,14 @@ public class HuntStartCommand extends BaseCommand {
 	public HuntStartCommand()
 	{
 		needPlayer = false;
-		permission = "monsterhunt.command.huntstart";
+		permission = "monsterhunt.admincmd.huntstart";
 	}
 
 
 	public Boolean run(CommandSender sender, String[] args) {		
-		if (args.length < 1 && Settings.globals.getBoolean("HuntZoneMode", false))
+		if (args.length < 1 && HuntWorldManager.getWorlds().size() == 1)
 		{
-			args = new String[]{"something"};
+			args = new String[]{HuntWorldManager.getWorlds().get(0).name};
 		}
 		else if (args.length < 1)
 		{

@@ -1,8 +1,8 @@
 package com.matejdro.bukkit.monsterhunt;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class HuntWorldManager {
@@ -17,7 +17,7 @@ public class HuntWorldManager {
 			return worlds.get(name);
 	}
 	
-	public static Collection<MonsterHuntWorld> getWorlds()
+	public static List<MonsterHuntWorld> getWorlds()
 	{
 		if (Settings.globals.getBoolean("HuntZoneMode", false))
 		{
@@ -26,7 +26,7 @@ public class HuntWorldManager {
 			return list;
 		}
 		else
-			return worlds.values();
+			return (List<MonsterHuntWorld>) worlds.values();
 	}
 	
 	public static void timer()

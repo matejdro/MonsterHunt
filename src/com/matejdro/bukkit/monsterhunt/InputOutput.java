@@ -256,10 +256,10 @@ private static Connection connection;
 		Settings.defaults.put("Rewards.EnableRewardEveryonePermission", false);
 		Settings.defaults.put("Rewards.RewardEveryone", false);
 		Settings.defaults.put("Rewards.NumberOfWinners", 3);
-		Settings.defaults.put("Rewards.RewardParametersPlace1", "264 3");
-		Settings.defaults.put("Rewards.RewardParametersPlace2", "264 2");
-		Settings.defaults.put("Rewards.RewardParametersPlace3", "264 1");
-		Settings.defaults.put("Rewards.RewardParametersEveryone", "264 1-1");
+		Settings.defaults.put("Rewards.RewardParametersPlace1", "3 3");
+		Settings.defaults.put("Rewards.RewardParametersPlace2", "3 2");
+		Settings.defaults.put("Rewards.RewardParametersPlace3", "3 1");
+		Settings.defaults.put("Rewards.RewardParametersEveryone", "3 1-1");
 
 		for (String i : new String[]{"Zombie", "Skeleton", "Creeper", "Spider", "Ghast", "Slime", "ZombiePigman", "Giant", "TamedWolf", "WildWolf", "ElectrifiedCreeper", "Player"})
 		{

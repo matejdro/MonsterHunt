@@ -12,7 +12,7 @@ public class HuntStopCommand extends BaseCommand {
 	public HuntStopCommand()
 	{
 		needPlayer = false;
-		permission = "monsterhunt.command.huntstop";
+		permission = "monsterhunt.admincmd.huntstop";
 	}
 
 
