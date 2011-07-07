@@ -308,7 +308,7 @@ private static Connection connection;
 		Settings.defaults.put("HuntZone.FirstCorner", "0,0,0");
 		Settings.defaults.put("HuntZone.SecondCorner", "0,0,0");
 		Settings.defaults.put("HuntZone.TeleportLocation", "0,0,0");
-		Settings.defaults.put("HuntZone.World", "world");
+		Settings.defaults.put("HuntZone.World", MonsterHunt.instance.getServer().getWorlds().get(0).getName());
 	}
 	
 	public static void saveZone()
