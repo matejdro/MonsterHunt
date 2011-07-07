@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 
 import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
 import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
-import com.matejdro.bukkit.monsterhunt.Settings;
 import com.matejdro.bukkit.monsterhunt.Util;
 
 public class HuntStartCommand extends BaseCommand {
@@ -19,7 +18,10 @@ public class HuntStartCommand extends BaseCommand {
 	public Boolean run(CommandSender sender, String[] args) {		
 		if (args.length < 1 && HuntWorldManager.getWorlds().size() == 1)
 		{
-			args = new String[]{HuntWorldManager.getWorlds().get(0).name};
+			String name = "";
+			for (MonsterHuntWorld w : HuntWorldManager.getWorlds())
+				name = w.name;
+			args = new String[]{name};
 		}
 		else if (args.length < 1)
 		{
