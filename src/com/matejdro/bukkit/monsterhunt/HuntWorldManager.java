@@ -59,7 +59,7 @@ public class HuntWorldManager {
 		    	    	  {
 		    	    		  if (world.Score.size() < world.settings.getInt("MinimumPlayers") && world.settings.getBoolean("EnableSignup"))
 		    	    		  {
-		    	    			  Util.Broadcast(world.settings.getString("Messages.MessageStartNotEnoughPlayers"));
+		    	    			Util.Broadcast(world.settings.getString("Messages.MessageStartNotEnoughPlayers"));
 		    	    			world.state = 0;
 		    	    			world.Score.clear();
 		    	    			world.waitday=true;

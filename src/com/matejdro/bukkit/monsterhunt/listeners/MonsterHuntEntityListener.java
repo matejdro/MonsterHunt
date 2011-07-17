@@ -57,13 +57,12 @@ private MonsterHunt plugin;
 			}
 		}
 		if (!HuntZone.isInsideZone(event.getEntity().getLocation())) return;
-					if (event.getEntity() == null || !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
-					
-					MonsterHuntWorld world = HuntWorldManager.getWorld(event.getEntity().getWorld().getName());
-					if (world == null || world.getWorld() == null) return;
-					
-					kill((LivingEntity) event.getEntity(), world);
-			}
+		if (event.getEntity() == null || !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
+			
+		MonsterHuntWorld world = HuntWorldManager.getWorld(event.getEntity().getWorld().getName());
+		if (world == null || world.getWorld() == null || world.state < 2) return;	
+			kill((LivingEntity) event.getEntity(), world);
+		}
 	
 	
 	private void kill(LivingEntity monster, MonsterHuntWorld world)

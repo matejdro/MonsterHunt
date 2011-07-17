@@ -328,7 +328,7 @@ private static Connection connection;
         try {
             conn = InputOutput.getConnection();
             st = conn.createStatement();
-            if (Settings.globals.getBoolean("UseMySql", false))
+            if (Settings.globals.getBoolean("UseMySQL", false))
             {
             	st.executeUpdate("CREATE TABLE IF NOT EXISTS `monsterhunt_highscores` ( `name` varchar(250) NOT NULL DEFAULT '', `highscore` integer DEFAULT NULL, PRIMARY KEY (`name`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
             }
