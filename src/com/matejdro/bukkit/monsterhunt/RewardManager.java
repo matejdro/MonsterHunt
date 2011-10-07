@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 
 import com.nijikokun.register.payment.Method.MethodAccount;
@@ -73,7 +74,7 @@ public class RewardManager {
 				RewardString = world.settings.getString(Setting.RewardParametersEveryone);
 				if (RewardString.contains(";"))
 					RewardString = PickRandom(RewardString);
-				if (world.settings.getBoolean(Setting.RewardEveryone) || (Util.permission(player, "monsterhunt.rewardeverytime", false) && world.settings.getBoolean(Setting.EnableRewardEveryonePermission)))
+				if (world.settings.getBoolean(Setting.RewardEveryone) || (Util.permission(player, "monsterhunt.rewardeverytime", PermissionDefault.FALSE) && world.settings.getBoolean(Setting.EnableRewardEveryonePermission)))
 				{
 					Reward((String) i.getKey(), RewardString, world, (Integer) i.getValue());
 				}

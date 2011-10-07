@@ -1,6 +1,8 @@
 name: MonsterHunt
 main: com.matejdro.bukkit.monsterhunt.MonsterHunt
-version: 1.3.1
+version: 1.4
+website: http://dev.bukkit.org/server-mods/monsterhunt/
+author: matejdro
 commands:
     hunt:
         description: Sign up for the hunt.
@@ -18,3 +20,39 @@ commands:
         description: Select hunt zone.
     hunttele:
         description: Teleport to the hunt zone
+permissions:
+    monsterhunt.*:
+        children:
+            monsterhunt.admincmd.*: true
+            monsterhunt.usercmd.*: true
+            monsterhunt.rewardeverytime: true
+            monsterhunt.noteleportrestrictions: true
+    monsterhunt.admincmd.*:
+        children:
+            monsterhunt.admincmd.huntstart: true
+            monsterhunt.admincmd.huntstop: true
+            monsterhunt.admincmd.huntzone: true
+    monsterhunt.usercmd.*:
+        children:
+            monsterhunt.usercmd.hunt: true
+            monsterhunt.usercmd.huntscore: true
+            monsterhunt.usercmd.huntstatus: true
+            monsterhunt.usercmd.hunttele: true
+    monsterhunt.admincmd.huntstart:
+        default: op
+    monsterhunt.admincmd.huntstop:
+        default: op
+    monsterhunt.admincmd.huntzone:
+        default: op
+    monsterhunt.usercmd.hunt:
+        default: true
+    monsterhunt.usercmd.huntscore:
+        default: true
+    monsterhunt.usercmd.huntstatus:
+        default: true
+    monsterhunt.usercmd.hunttele:
+        default: true
+    monsterhunt.rewardeverytime:
+        default: false
+    monsterhunt.noteleportrestrictions:
+        default: op

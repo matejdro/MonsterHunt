@@ -2,6 +2,7 @@ package com.matejdro.bukkit.monsterhunt.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
 import com.matejdro.bukkit.monsterhunt.HuntZone;
@@ -16,6 +17,7 @@ public class HuntTeleCommand extends BaseCommand {
 	{
 		needPlayer = true;
 		permission = "monsterhunt.usercmd.hunttele";
+		adminCommand = false;
 	}
 
 
@@ -24,7 +26,7 @@ public class HuntTeleCommand extends BaseCommand {
 		MonsterHuntWorld world = HuntWorldManager.getWorld(player.getWorld().getName());
 		if (!Settings.globals.getBoolean(Setting.HuntZoneMode.getString(), false) || world == null || world.getWorld() == null) return false;
 		
-		Boolean permission = !Util.permission(player, "monsterhunt.noteleportrestrictions", player.isOp());
+		Boolean permission = !Util.permission(player, "monsterhunt.noteleportrestrictions", PermissionDefault.OP);
 		
 		if (world.state == 0 && permission)
 		{

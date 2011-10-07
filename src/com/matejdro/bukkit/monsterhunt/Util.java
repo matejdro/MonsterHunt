@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.nijikokun.bukkit.Permissions.Permissions;
 
@@ -70,12 +72,12 @@ public class Util {
     	}
     }
         
-    public static Boolean permission(Player player, String line, Boolean def)
+    public static Boolean permission(Player player, String line, PermissionDefault def)
     {
     	    if(MonsterHunt.permissions != null) {
     	    	return (((Permissions) MonsterHunt.permissions).getHandler()).has(player, line);
     	    } else {
-    	    	return def;
+    	    	return player.hasPermission(new Permission(line, def));
     	    }
     }
 

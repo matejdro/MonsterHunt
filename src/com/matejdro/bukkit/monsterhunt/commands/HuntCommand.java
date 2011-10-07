@@ -14,6 +14,7 @@ public class HuntCommand extends BaseCommand {
 	{
 		needPlayer = true;
 		permission = "monsterhunt.usercmd.hunt";
+		adminCommand = false;
 	}
 
 
