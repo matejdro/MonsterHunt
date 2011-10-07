@@ -29,6 +29,7 @@ public enum Setting {
 	RewardEveryone("Rewards.RewardEveryone", false),
 	NumberOfWinners("Rewards.NumberOFWinners", 3),
 	RewardParametersEveryone("Rewards.RewardParametersEveryone", "3 1-1"),
+	MinimumPointsEveryone("MinimumPointsEveryone", 1),
 	MinimumPointsPlace("MinimumPointsPlace", "", false),
 	RewardParametersPlace("Rewards.RewardParametersPlace", "", false),
 	

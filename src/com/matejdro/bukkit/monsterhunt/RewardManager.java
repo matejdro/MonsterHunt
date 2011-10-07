@@ -67,6 +67,7 @@ public class RewardManager {
 		{
 			for (Entry i : world.Score.entrySet())
 			{
+				if (((Integer) i.getValue()) < world.settings.getInt(Setting.MinimumPointsEveryone)) continue;
 				Player player = plugin.getServer().getPlayer((String) i.getKey());
 				if (player == null) continue;
 				RewardString = world.settings.getString(Setting.RewardParametersEveryone);
