@@ -23,6 +23,7 @@ public enum Setting {
 	AnnounceLead("AnnounceLead", true),
 	SelectionTool("SelectionTool", 268),
 	HuntZoneMode("HuntZoneMode", false),
+	AnnounceSignUp("AnnounceSignUp", true),
 	
 	EnableReward("Rewards.EnableReward", true),
 	EnableRewardEveryonePermission("Rewards.EnableRewardEveryonePermission", false),
@@ -73,8 +74,9 @@ public enum Setting {
 	MessageHuntStatusTimeReamining("Messages.MessageHuntStatusTimeReamining", "Keep up the killing! You have only <Timeleft>% of the night left in this world!"),
 	MessageLead("Messages.MessageLead", "<Player> has just taken over lead with <Points> points!"),
 	MessageHuntTeleNoHunt("Messages.MessageHuntTeleNoHunt", "You cannot teleport to hunt zone when there is no hunt!"),
-	MessageHuntTeleNotSignedUp("Messages.MessageHuntTeleNotSignedUp", "You cannot teleport to hunt zone if you are not signed up to the hunt!");
-	
+	MessageHuntTeleNotSignedUp("Messages.MessageHuntTeleNotSignedUp", "You cannot teleport to hunt zone if you are not signed up to the hunt!"),
+	SignUpAnnouncement("Messages.SignUpAnnouncement", "<Player> has signed up for the hunt in world <World>!");
+
 	private String name;
 	private Object def;
 	private Boolean WriteDefault;
