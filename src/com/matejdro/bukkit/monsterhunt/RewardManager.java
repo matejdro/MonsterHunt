@@ -11,9 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import com.iConomy.iConomy;
-import com.iConomy.system.Account;
-import com.iConomy.system.Holdings;
+import com.nijikokun.register.payment.Method.MethodAccount;
+import com.nijikokun.register.payment.Methods;
 
 public class RewardManager {
 
@@ -25,17 +24,17 @@ public class RewardManager {
 		HashMap<String,Integer>[] Winners = GetWinners(world);
 		if (Winners[0].size() < 1)
 		{
-			String message = world.settings.getString("Messages.FinishMessageNotEnoughPoints");
+			String message = world.settings.getString(Setting.FinishMessageNotEnoughPlayers);
 			message = message.replace("<World>", world.name);
 			Util.Broadcast(message);
 			return;
 		}
-		int num = world.settings.getInt("Rewards.NumberOfWinners");
+		int num = world.settings.getInt(Setting.NumberOfWinners);
 		
 		int score = Winners[0].get(Winners[0].keySet().toArray()[0]);
-		if (score < world.settings.getInt("MinimumPointsPlace1"))
+		if (score < world.settings.getPlaceInt(Setting.MinimumPointsPlace, 1))
 		{
-			String message = world.settings.getString("Messages.FinishMessageNotEnoughPoints");
+			String message = world.settings.getString(Setting.FinishMessageNotEnoughPoints);
 			message = message.replace("<World>", world.name);
 			Util.Broadcast(message);
 			return;
@@ -44,18 +43,18 @@ public class RewardManager {
 		String RewardString;
 		
 		//Normal reward
-			if (world.settings.getBoolean("Rewards.EnableReward"))
+			if (world.settings.getBoolean(Setting.EnableReward))
 			{
 				for (int place = 0; place<num; place++)
 				{
 					if (Winners[place].size() < 1) continue;
 					score = Winners[place].get(Winners[place].keySet().toArray()[0]);
 					Util.Debug(String.valueOf(score));
-					Util.Debug(String.valueOf(world.settings.getInt("MinimumPointsPlace" + String.valueOf(place + 1))));
-					if (score < world.settings.getInt("MinimumPointsPlace" + String.valueOf(place + 1))) Winners[place].clear();
+					Util.Debug(String.valueOf(world.settings.getPlaceInt(Setting.MinimumPointsPlace, place + 1)));
+					if (score < world.settings.getPlaceInt(Setting.MinimumPointsPlace, place + 1)) Winners[place].clear();
 					for (String i : Winners[place].keySet())
 					{
-						RewardString = world.settings.getString("Rewards.RewardParametersPlace" + String.valueOf(place + 1));
+						RewardString = world.settings.getPlaceString(Setting.RewardParametersPlace, place + 1);
 						if (RewardString.contains(";"))
 							RewardString = PickRandom(RewardString);
 						Reward(i, RewardString, world, score);
@@ -64,16 +63,16 @@ public class RewardManager {
 		}
 		
 		//RewardEveryone
-		if (!(!world.settings.getBoolean("Rewards.EnableRewardEveryonePermission") && !world.settings.getBoolean("Rewards.RewardEveryone")))
+		if (!(!world.settings.getBoolean(Setting.EnableRewardEveryonePermission) && !world.settings.getBoolean(Setting.RewardEveryone)))
 		{
 			for (Entry i : world.Score.entrySet())
 			{
 				Player player = plugin.getServer().getPlayer((String) i.getKey());
 				if (player == null) continue;
-				RewardString = world.settings.getString("Rewards.RewardParametersEveryone");
+				RewardString = world.settings.getString(Setting.RewardParametersEveryone);
 				if (RewardString.contains(";"))
 					RewardString = PickRandom(RewardString);
-				if (world.settings.getBoolean("Rewards.RewardEveryone") || (Util.permission(player, "monsterhunt.rewardeverytime", false) && world.settings.getBoolean("Rewards.EnableRewardEveryonePermission")))
+				if (world.settings.getBoolean(Setting.RewardEveryone) || (Util.permission(player, "monsterhunt.rewardeverytime", false) && world.settings.getBoolean(Setting.EnableRewardEveryonePermission)))
 				{
 					Reward((String) i.getKey(), RewardString, world, (Integer) i.getValue());
 				}
@@ -84,7 +83,7 @@ public class RewardManager {
 		Util.Debug("[MonterHunt][DEBUG - NEVEREND]Broadcasting Winners");
 		String message;
 		
-			message = world.settings.getString("Messages.FinishMessageWinners");
+			message = world.settings.getString(Setting.FinishMessageWinners);
 			message = message.replace("<World>", world.name);
 
 			for (int place = 0; place<num; place++)
@@ -185,7 +184,7 @@ public class RewardManager {
 			}
 		}
 		if (items.trim() == "") return;
-		String message= world.settings.getString("Messages.RewardMessage");
+		String message= world.settings.getString(Setting.RewardMessage);
 		items = items.substring(0, items.length() - 2);
 		message =message.replace("<Items>", items);
 		Util.Message(message, player);
@@ -196,13 +195,16 @@ public class RewardManager {
 	{		
 		Plugin test = plugin.getServer().getPluginManager().getPlugin("iConomy");
 		if(test != null) {
-			iConomy iConomy = (iConomy) test;
-			Account account = iConomy.getAccount(player);
-			Holdings balance = account.getHoldings();
-			balance.add(number);
-			return iConomy.format(number);
+			if (Methods.getMethod() == null)
+			{
+				MonsterHunt.log.log(Level.WARNING, "[MonsterHunt] You have economy rewards enabled, but don't have any economy plugin installed! Some players may not get their reward! See http://dev.bukkit.org/server-mods/register/");
+				return "";
+			}
+			MethodAccount account = Methods.getMethod().getAccount(player);
+			account.add(number);
+			return Methods.getMethod().format(number);
 		} else {
-			MonsterHunt.log.log(Level.WARNING, "[MonsterHunt]: You have iConomy rewards enabled, but don't hav iConomy installed! Some players may not get their reward!");
+			MonsterHunt.log.log(Level.WARNING, "[MonsterHunt] You have economy rewards enabled, but don't have Register plugin installed! Some players may not get their reward! See http://dev.bukkit.org/server-mods/register/");
 			return "";
 		}
 	}
@@ -264,7 +266,7 @@ public class RewardManager {
 	{
 		HashMap<String, Integer> scores = new HashMap<String, Integer>();
 		scores.putAll(world.Score);
-		int num = world.settings.getInt("Rewards.NumberOfWinners");
+		int num = world.settings.getInt(Setting.NumberOfWinners);
 		HashMap<String,Integer>[] winners = new HashMap[num];
 		for (int place = 0; place<num; place++)
 		{

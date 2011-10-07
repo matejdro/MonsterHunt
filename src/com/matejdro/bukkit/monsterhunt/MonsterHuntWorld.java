@@ -41,10 +41,10 @@ public class MonsterHuntWorld {
 	
 	public int getSignUpPeriodTime()
 	{
-		int time = settings.getInt("SignUpPeriodTime");
+		int time = settings.getInt(Setting.SignUpPeriodTime);
 			if (time != 0)
 			{
-				time = settings.getInt("StartTime") - settings.getInt("SignUpPeriodTime") * 1200;
+				time = settings.getInt(Setting.StartTime) - settings.getInt(Setting.SignUpPeriodTime) * 1200;
 				if (time < 0)
 				{
 					MonsterHunt.log.log(Level.WARNING, "[MonterHunt] Wrong SignUpPeriodTime Configuration! Sign Up period will be disabled!");
@@ -59,7 +59,7 @@ public class MonsterHuntWorld {
 	
 	public void start()
 	{
-		String message = settings.getString("Messages.StartMessage");
+		String message = settings.getString(Setting.StartMessage);
 		message = message.replace("<World>", name);
 		Util.Broadcast(message);
 		state = 2;
@@ -68,9 +68,9 @@ public class MonsterHuntWorld {
 	public void stop()
 	{
 		if (state < 2) return;
-		if (Score.size() < settings.getInt("MinimumPlayers"))
+		if (Score.size() < settings.getInt(Setting.MinimumPlayers))
 		{
-			String message = settings.getString("Messages.FinishMessageNotEnoughPlayers");
+			String message = settings.getString(Setting.FinishMessageNotEnoughPlayers);
 			message = message.replace("<World>", name);
 			Util.Broadcast(message);
 		}
@@ -85,8 +85,6 @@ public class MonsterHuntWorld {
 			player.teleport(e.getValue());
 		}
 		state = 0;
-		if (Settings.globals.getBoolean("EnableHighScores", false))
-		{
 			for (String i : Score.keySet())
 			{
 				Integer hs = InputOutput.getHighScore(i);
@@ -98,13 +96,12 @@ public class MonsterHuntWorld {
 					Player player = MonsterHunt.instance.getServer().getPlayer(i);
 					if (player != null) 
 					{
-						String message = settings.getString("Messages.HighScoreMessage");
+						String message = settings.getString(Setting.HighScoreMessage);
 						message = message.replace("<Points>", String.valueOf(score));
 						Util.Message(message, player);
 					}
 				}
 			}
-		}
 		
 		lastScore.putAll(Score);
 		Score.clear();
@@ -113,9 +110,9 @@ public class MonsterHuntWorld {
 	
 	public void skipNight()
     {
-     if (settings.getInt("SkipToIfFailsToStart") >= 0)
+     if (settings.getInt(Setting.SkipToIfFailsToStart) >= 0)
      {
-    	 getWorld().setTime(settings.getInt("SkipToIfFailsToStart"));
+    	 getWorld().setTime(settings.getInt(Setting.SkipToIfFailsToStart));
      }
     }
 	
@@ -123,8 +120,8 @@ public class MonsterHuntWorld {
     {
     	if (curday == 0)
   	  {	
-  		curday = settings.getInt("SkipDays");
-  		if ((new Random().nextInt(100)) < settings.getInt("StartChance"))
+  		curday = settings.getInt(Setting.SkipDays);
+  		if ((new Random().nextInt(100)) < settings.getInt(Setting.StartChance))
 		  {
 			return true;
 		  }

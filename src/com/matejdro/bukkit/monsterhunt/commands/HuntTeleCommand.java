@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
 import com.matejdro.bukkit.monsterhunt.HuntZone;
 import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
+import com.matejdro.bukkit.monsterhunt.Setting;
 import com.matejdro.bukkit.monsterhunt.Settings;
 import com.matejdro.bukkit.monsterhunt.Util;
 
@@ -21,18 +22,18 @@ public class HuntTeleCommand extends BaseCommand {
 	public Boolean run(CommandSender sender, String[] args) {		
 		Player player = (Player) sender;
 		MonsterHuntWorld world = HuntWorldManager.getWorld(player.getWorld().getName());
-		if (!Settings.globals.getBoolean("HuntZoneMode", false) || world == null || world.getWorld() == null) return false;
+		if (!Settings.globals.getBoolean(Setting.HuntZoneMode.getString(), false) || world == null || world.getWorld() == null) return false;
 		
 		Boolean permission = !Util.permission(player, "monsterhunt.noteleportrestrictions", player.isOp());
 		
 		if (world.state == 0 && permission)
 		{
-				Util.Message(world.settings.getString("Messages.MessageHuntTeleNoHunt"),player);
+				Util.Message(world.settings.getString(Setting.MessageHuntTeleNoHunt),player);
 				return true;
 		}
-		else if (world.Score.containsKey(player.getName()) && world.settings.getBoolean("EnableSignup") && permission)
+		else if (world.Score.containsKey(player.getName()) && world.settings.getBoolean(Setting.EnableSignup) && permission)
 		{
-			Util.Message(world.settings.getString("Messages.MessageHuntTeleNotSignedUp"),player);
+			Util.Message(world.settings.getString(Setting.MessageHuntTeleNotSignedUp),player);
 			return true;
 		}
 

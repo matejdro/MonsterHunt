@@ -58,15 +58,15 @@ public class Util {
 	
 	public static void Debug(String message)
 	{
-		if (Settings.globals.getBoolean("Debug", false))
+		if (Settings.globals.getBoolean(Setting.Debug.getString(), false))
 			MonsterHunt.log.info("[MonsterHunt][Debug]" + message);
 	}
 	
     public void StartFailed(MonsterHuntWorld world)
     {
-    	if (world.settings.getInt("SkipToIfFailsToStart") >= 0)
+    	if (world.settings.getInt(Setting.SkipToIfFailsToStart) >= 0)
     	{
-    		world.getWorld().setTime(world.settings.getInt("SkipToIfFailsToStart"));
+    		world.getWorld().setTime(world.settings.getInt(Setting.SkipToIfFailsToStart));
     	}
     }
         

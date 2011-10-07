@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.bukkit.util.config.Configuration;
 
 public class Settings {
-	public static HashMap<String, Object> defaults = new HashMap<String, Object>();
 	public static Configuration globals;
 	
 	private Configuration config;
@@ -17,52 +16,47 @@ public class Settings {
 	}
 	
 	
-	public int getInt(String setting)
+	public int getInt(Setting setting)
 	{
-		if (config.getProperty(setting) != null)
-		{
-			return config.getInt(setting, 1);
-		}
-		else if (globals.getProperty(setting) != null)
-		{
-			return globals.getInt(setting, 1);
-		}
-		else
-		{
-			return (Integer) defaults.get(setting);
-		}
+		Integer property = (Integer) config.getProperty(setting.getString());
+		if (property == null) property = (Integer) globals.getProperty(setting.getString());
+		
+		return property;
 	}
 	
-	public String getString(String setting)
+	public String getString(Setting setting)
 	{
-		if (config.getProperty(setting) != null)
-		{
-			return config.getString(setting);
-		}
-		else if (globals.getProperty(setting) != null)
-		{
-			return globals.getString(setting);
-		}
-		else
-		{
-			return (String) defaults.get(setting);
-		}
+		String property = (String) config.getProperty(setting.getString());
+		if (property == null) property = (String) globals.getProperty(setting.getString());
+		
+		return property;
+
 	}
 	
-	public Boolean getBoolean(String setting)
+	public Boolean getBoolean(Setting setting)
 	{
-		if (config.getProperty(setting) != null)
-		{
-			return config.getBoolean(setting, false);
-		}
-		if (globals.getProperty(setting) != null)
-		{
-			return globals.getBoolean(setting, false);
-		}
-		else
-		{
-			return (Boolean) defaults.get(setting);
-		}
+		Boolean property = (Boolean) config.getProperty(setting.getString());
+		if (property == null) property = (Boolean) globals.getProperty(setting.getString());
+		
+		return property;
+
+	}
+	
+	public int getPlaceInt(Setting setting, int place)
+	{
+		Integer property = (Integer) config.getProperty(setting.getString() + String.valueOf(place));
+		if (property == null) property = (Integer) globals.getProperty(setting.getString() + String.valueOf(place));
+		
+		return property;
+	}
+	
+	public String getPlaceString(Setting setting, int place)
+	{
+		String property = (String) config.getProperty(setting.getString() + String.valueOf(place));
+		if (property == null) property = (String) globals.getProperty(setting.getString() + String.valueOf(place));
+		
+		return property;
+
 	}
 	
 	public int getMonsterValue(String mobname, String killer)
@@ -89,7 +83,7 @@ public class Settings {
 			}
 			else
 			{
-				return (Integer) defaults.get(setting);
+				return 0;
 			}
 
 		}
@@ -121,7 +115,7 @@ public class Settings {
 			}
 			else
 			{
-				return (String) defaults.get(setting);
+				return "";
 			}
 		}
 	}

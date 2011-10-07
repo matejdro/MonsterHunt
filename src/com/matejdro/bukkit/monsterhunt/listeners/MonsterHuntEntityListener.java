@@ -5,13 +5,17 @@ import java.util.Map.Entry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.CaveSpider;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Spider;
@@ -19,7 +23,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageByProjectileEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 
@@ -27,6 +31,7 @@ import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
 import com.matejdro.bukkit.monsterhunt.HuntZone;
 import com.matejdro.bukkit.monsterhunt.MonsterHunt;
 import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
+import com.matejdro.bukkit.monsterhunt.Setting;
 import com.matejdro.bukkit.monsterhunt.Util;
 
 public class MonsterHuntEntityListener extends EntityListener {
@@ -46,22 +51,21 @@ private MonsterHunt plugin;
 			MonsterHuntWorld world = HuntWorldManager.getWorld(player.getWorld().getName());
 			
 			if (world == null || world.getWorld() == null) return;
-			if (world.settings.getInt("DeathPenalty") == 0) return;
+			if (world.settings.getInt(Setting.DeathPenalty) == 0) return;
 			
 			if (world.state > 1 && world.Score.containsKey(player.getName()))
 			{
 				double score = world.Score.get(player.getName()) + 0.00;
-				score = score - (score * world.settings.getInt("DeathPenalty") / 100.00);	
+				score = score - (score * world.settings.getInt(Setting.DeathPenalty) / 100.00);	
 				world.Score.put(player.getName(), (int) Math.round(score));
-				Util.Message(world.settings.getString("Messages.DeathMessage"),player);
+				Util.Message(world.settings.getString(Setting.DeathMessage),player);
 			}
 		}
 		if (!HuntZone.isInsideZone(event.getEntity().getLocation())) return;
 		if (event.getEntity() == null || !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
-			
 		MonsterHuntWorld world = HuntWorldManager.getWorld(event.getEntity().getWorld().getName());
 		if (world == null || world.getWorld() == null || world.state < 2) return;	
-			kill((LivingEntity) event.getEntity(), world);
+		kill((LivingEntity) event.getEntity(), world);
 		}
 	
 	
@@ -70,11 +74,13 @@ private MonsterHunt plugin;
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) monster.getLastDamageCause();
 			String name;
 			Player player = null;
-
+		
 			String cause = "General";
-			if (event instanceof EntityDamageByProjectileEvent)
+			if (event.getCause() == DamageCause.PROJECTILE && event.getDamager() instanceof Arrow)
 			{
 				cause = "Arrow";
+				LivingEntity shooter = ((Arrow) event.getDamager()).getShooter();
+				if (shooter instanceof Player) player = (Player) shooter;
 			}
 			else if (event.getDamager() instanceof Wolf && ((Wolf) event.getDamager()).isTamed())
 			{
@@ -95,7 +101,7 @@ private MonsterHunt plugin;
 						cause = String.valueOf(player.getItemInHand().getTypeId());
 				}
 			}
-			
+						
 			int points = 0;
 			if (monster instanceof Skeleton)
 			{
@@ -166,19 +172,34 @@ private MonsterHunt plugin;
 				points = world.settings.getMonsterValue("Player", cause);
 				name = "Player";
 			}
+			else if (monster instanceof Enderman)
+			{
+				points = world.settings.getMonsterValue("Enderman", cause);
+				name = "Enderman";
+			}
+			else if (monster instanceof Silverfish)
+			{
+				points = world.settings.getMonsterValue("Silverfish", cause);
+				name = "Silverfish";
+			}
+			else if (monster instanceof CaveSpider)
+			{
+				points = world.settings.getMonsterValue("CaveSpider", cause);
+				name = "CaveSpider";
+			}
 			else
 			{
 				return;
 			}
 			if (points < 1) return;
 			
-			if (!world.Score.containsKey(player.getName()) && !world.settings.getBoolean("EnableSignup"))
+			if (!world.Score.containsKey(player.getName()) && !world.settings.getBoolean(Setting.EnableSignup))
 				world.Score.put(player.getName(), 0);
 			if (world.Score.containsKey(player.getName()))
 			{
-				if (!world.properlyspawned.contains(monster.getEntityId()) && world.settings.getBoolean("OnlyCountMobsSpawnedOutside"))
+				if (!world.properlyspawned.contains(monster.getEntityId()) && world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutside))
 				{
-					String message = world.settings.getString("Messages.KillMobSpawnedInsideMessage");
+					String message = world.settings.getString(Setting.KillMobSpawnedInsideMessage);
 					Util.Message(message, player);
 					world.blacklist.add(monster.getEntityId());
 					return;
@@ -186,7 +207,7 @@ private MonsterHunt plugin;
 				}
 				int newscore = world.Score.get(player.getName()) + points;
 
-				if (world.settings.getBoolean("AnnounceLead"))
+				if (world.settings.getBoolean(Setting.AnnounceLead))
 				{
 					Entry<String, Integer> leadpoints = null;
 					for (Entry<String,Integer> e : world.Score.entrySet())
@@ -203,7 +224,7 @@ private MonsterHunt plugin;
 										
 					if (leadpoints != null && newscore > leadpoints.getValue() && !leadpoints.getKey().equals(player.getName()))
 					{
-						String message = world.settings.getString("Messages.MessageLead");
+						String message = world.settings.getString(Setting.MessageLead);
 						message = message.replace("<Player>", player.getName());
 						message = message.replace("<Points>", String.valueOf(newscore));
 						message = message.replace("<World>", world.name);
@@ -232,28 +253,28 @@ private MonsterHunt plugin;
 			MonsterHuntWorld world = HuntWorldManager.getWorld(event.getLocation().getWorld().getName());
 			if (world == null || world.getWorld() == null) return;
 			if (world.state == 0) return;
-			if (!world.settings.getBoolean("OnlyCountMobsSpawnedOutside")) return;
+			if (!world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutside)) return;
 			Block block = event.getLocation().getBlock();
 			int number = 0;
 			while (block.getY() < 125)
 			{
 				number++;
-				block = block.getFace(BlockFace.UP);
+				block = block.getRelative(BlockFace.UP);
 				Boolean empty = false;
 				
 				if (block.getType() == Material.AIR || block.getType() == Material.LEAVES) empty = true;
 				else if (block.getType() == Material.LOG)
 				{
-					if (block.getFace(BlockFace.NORTH).getType() == Material.AIR || block.getFace(BlockFace.NORTH).getType() == Material.LEAVES) empty = true;
-					else if (block.getFace(BlockFace.EAST).getType() == Material.AIR || block.getFace(BlockFace.EAST).getType() == Material.LEAVES) empty = true;
-					else if (block.getFace(BlockFace.WEST).getType() == Material.AIR || block.getFace(BlockFace.WEST).getType() == Material.LEAVES) empty = true;
-					else if (block.getFace(BlockFace.SOUTH).getType() == Material.AIR || block.getFace(BlockFace.SOUTH).getType() == Material.LEAVES) empty = true;
-					else if (block.getFace(BlockFace.UP).getType() == Material.AIR || block.getFace(BlockFace.UP).getType() == Material.LEAVES) empty = true;
-					else if (block.getFace(BlockFace.DOWN).getType() == Material.AIR || block.getFace(BlockFace.DOWN).getType() == Material.LEAVES) empty = true;
+					if (block.getRelative(BlockFace.NORTH).getType() == Material.AIR || block.getRelative(BlockFace.NORTH).getType() == Material.LEAVES) empty = true;
+					else if (block.getRelative(BlockFace.EAST).getType() == Material.AIR || block.getRelative(BlockFace.EAST).getType() == Material.LEAVES) empty = true;
+					else if (block.getRelative(BlockFace.WEST).getType() == Material.AIR || block.getRelative(BlockFace.WEST).getType() == Material.LEAVES) empty = true;
+					else if (block.getRelative(BlockFace.SOUTH).getType() == Material.AIR || block.getRelative(BlockFace.SOUTH).getType() == Material.LEAVES) empty = true;
+					else if (block.getRelative(BlockFace.UP).getType() == Material.AIR || block.getRelative(BlockFace.UP).getType() == Material.LEAVES) empty = true;
+					else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR || block.getRelative(BlockFace.DOWN).getType() == Material.LEAVES) empty = true;
 				}
 				
 				if (!empty) return;
-				if (world.settings.getInt("OnlyCountMobsSpawnedOutsideHeightLimit") > 0 && world.settings.getInt("OnlyCountMobsSpawnedOutsideHeightLimit") < number) break;
+				if (world.settings.getInt(Setting.OnlyCountMobsSpawnedOutsideHeightLimit) > 0 && world.settings.getInt(Setting.OnlyCountMobsSpawnedOutside) < number) break;
 			}
 				world.properlyspawned.add(event.getEntity().getEntityId());
 
