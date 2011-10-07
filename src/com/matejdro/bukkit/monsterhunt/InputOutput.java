@@ -185,9 +185,7 @@ private static Connection connection;
 		Settings.globals = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
 
 		LoadDefaults();
-		
-		Settings.globals.load();
-		
+				
 		for (String n : Settings.globals.getString("EnabledWorlds").split(","))
 		{
 					MonsterHuntWorld mw = new MonsterHuntWorld(n);
@@ -218,6 +216,9 @@ private static Connection connection;
 	
 	public static void LoadDefaults()
 	{
+		Settings.globals.load();
+
+		
 		if (!new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt").exists()) 
 		{
 			for (String i : new String[]{"Zombie", "Skeleton", "Creeper", "Spider", "Ghast", "Slime", "ZombiePigman", "Giant", "TamedWolf", "WildWolf", "ElectrifiedCreeper", "Player", "Enderman", "Silverfish", "CaveSpider"})
@@ -236,6 +237,7 @@ private static Connection connection;
 			Settings.globals.setProperty("Rewards.RewardParametersPlace3", "3 1");
 		}
 		
+				
 		for (Setting s : Setting.values())
     	{
     		if (s.writeDefault() && Settings.globals.getProperty(s.getString()) == null) Settings.globals.setProperty(s.getString(), s.getDefault());

@@ -61,10 +61,12 @@ private MonsterHunt plugin;
 				Util.Message(world.settings.getString(Setting.DeathMessage),player);
 			}
 		}
+		
 		if (!HuntZone.isInsideZone(event.getEntity().getLocation())) return;
 		if (event.getEntity() == null || !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
 		MonsterHuntWorld world = HuntWorldManager.getWorld(event.getEntity().getWorld().getName());
 		if (world == null || world.getWorld() == null || world.state < 2) return;	
+		Util.Debug("test");
 		kill((LivingEntity) event.getEntity(), world);
 		}
 	
@@ -197,7 +199,7 @@ private MonsterHunt plugin;
 				world.Score.put(player.getName(), 0);
 			if (world.Score.containsKey(player.getName()))
 			{
-				if (!world.properlyspawned.contains(monster.getEntityId()) && world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutside))
+				if (!(world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutsideBlackList) ^ world.properlyspawned.contains(monster.getEntityId())) && world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutside))
 				{
 					String message = world.settings.getString(Setting.KillMobSpawnedInsideMessage);
 					Util.Message(message, player);
@@ -273,10 +275,14 @@ private MonsterHunt plugin;
 					else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR || block.getRelative(BlockFace.DOWN).getType() == Material.LEAVES) empty = true;
 				}
 				
-				if (!empty) return;
+				if (!empty) 
+				{
+					if (world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutsideBlackList)) world.properlyspawned.add(event.getEntity().getEntityId());
+					return;
+				}
 				if (world.settings.getInt(Setting.OnlyCountMobsSpawnedOutsideHeightLimit) > 0 && world.settings.getInt(Setting.OnlyCountMobsSpawnedOutside) < number) break;
 			}
-				world.properlyspawned.add(event.getEntity().getEntityId());
+			if (!world.settings.getBoolean(Setting.OnlyCountMobsSpawnedOutsideBlackList)) world.properlyspawned.add(event.getEntity().getEntityId());
 
 			
 		}
