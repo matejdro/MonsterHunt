@@ -1,7 +1,5 @@
 package com.matejdro.bukkit.monsterhunt;
 
-import java.util.HashMap;
-
 import org.bukkit.util.config.Configuration;
 
 public class Settings {

@@ -1,6 +1,5 @@
 package com.matejdro.bukkit.monsterhunt;
 
-import java.util.Arrays;
 
 
 public enum Setting {
