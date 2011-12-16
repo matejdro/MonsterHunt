@@ -195,7 +195,7 @@ public class RewardManager {
 	}
 	private static String iConomyReward(String player, int number)
 	{		
-		Plugin test = plugin.getServer().getPluginManager().getPlugin("iConomy");
+		Plugin test = plugin.getServer().getPluginManager().getPlugin("Register");
 		if(test != null) {
 			if (Methods.getMethod() == null)
 			{

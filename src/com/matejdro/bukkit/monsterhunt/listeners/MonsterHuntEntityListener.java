@@ -5,20 +5,32 @@ import java.util.Map.Entry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Blaze;
 import org.bukkit.entity.CaveSpider;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.MushroomCow;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Spider;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -78,10 +90,13 @@ private MonsterHunt plugin;
 			Player player = null;
 		
 			String cause = "General";
-			if (event.getCause() == DamageCause.PROJECTILE && event.getDamager() instanceof Arrow)
+			if (event.getCause() == DamageCause.PROJECTILE && event.getDamager() instanceof Projectile)
 			{
-				cause = "Arrow";
-				LivingEntity shooter = ((Arrow) event.getDamager()).getShooter();
+				if (event.getDamager() instanceof Snowball)
+					cause = "Snowball";
+				else
+					cause = "Arrow";
+				LivingEntity shooter = ((Projectile) event.getDamager()).getShooter();
 				if (shooter instanceof Player) player = (Player) shooter;
 			}
 			else if (event.getDamager() instanceof Wolf && ((Wolf) event.getDamager()).isTamed())
@@ -189,6 +204,62 @@ private MonsterHunt plugin;
 				points = world.settings.getMonsterValue("CaveSpider", cause);
 				name = "CaveSpider";
 			}
+			else if (monster instanceof EnderDragon)
+			{
+				points = world.settings.getMonsterValue("EnderDragon", cause);
+				name = "Ender Dragon";
+			}
+			else if (monster instanceof MagmaCube)
+			{
+				points = world.settings.getMonsterValue("MagmaCube", cause);
+				name = "Magma Cube";
+			}
+			else if (monster instanceof MushroomCow)
+			{
+				points = world.settings.getMonsterValue("Mooshroom", cause);
+				name = "Mooshroom";
+			}
+			else if (monster instanceof Chicken)
+			{
+				points = world.settings.getMonsterValue("Chicken", cause);
+				name = "Chicken";
+			}
+			else if (monster instanceof Cow)
+			{
+				points = world.settings.getMonsterValue("Cow", cause);
+				name = "Cow";
+			}
+			else if (monster instanceof Blaze)
+			{
+				points = world.settings.getMonsterValue("Blaze", cause);
+				name = "Blaze";
+			}
+			else if (monster instanceof Pig)
+			{
+				points = world.settings.getMonsterValue("Pig", cause);
+				name = "Pig";
+			}
+			else if (monster instanceof Sheep)
+			{
+				points = world.settings.getMonsterValue("Sheep", cause);
+				name = "Sheep";
+			}
+			else if (monster instanceof Snowman)
+			{
+				points = world.settings.getMonsterValue("SnowGolem", cause);
+				name = "Snow Golem";
+			}
+			else if (monster instanceof Squid)
+			{
+				points = world.settings.getMonsterValue("Squid", cause);
+				name = "Squid";
+			}
+			else if (monster instanceof Villager)
+			{
+				points = world.settings.getMonsterValue("Villager", cause);
+				name = "Villager";
+			}
+
 			else
 			{
 				return;

@@ -218,17 +218,27 @@ private static Connection connection;
 	{
 		Settings.globals.load();
 
+		for (String i : new String[]{"Zombie", "Skeleton", "Creeper", "Spider", "Ghast", "Slime", "ZombiePigman", "Giant", "TamedWolf", "WildWolf", "ElectrifiedCreeper", "Player", "Enderman", "Silverfish", "CaveSpider", "EnderDragon", "MagmaCube", "Blaze"})
+		{
+			if (Settings.globals.getProperty("Value." + i) != null) continue;
+			
+			Settings.globals.setProperty("Value." + i + ".General", 10);
+			Settings.globals.setProperty("Value." + i + ".Wolf", 7);
+			Settings.globals.setProperty("Value." + i + ".Arrow", 4);
+			Settings.globals.setProperty("Value." + i + ".Snowball", 20);
+			Settings.globals.setProperty("Value." + i + ".283", 20);
+		}
+		
+		for (String i : new String[]{"MushroomCow", "Chicken", "Cow", "Pig", "Sheep", "SnowGolem", "Squid", "Villager"})
+		{
+			if (Settings.globals.getProperty("Value." + i) != null) continue;
+			
+			Settings.globals.setProperty("Value." + i + ".General", 0);
+		}
+
 		
 		if (!new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt").exists()) 
-		{
-			for (String i : new String[]{"Zombie", "Skeleton", "Creeper", "Spider", "Ghast", "Slime", "ZombiePigman", "Giant", "TamedWolf", "WildWolf", "ElectrifiedCreeper", "Player", "Enderman", "Silverfish", "CaveSpider"})
-			{
-				Settings.globals.setProperty("Value." + i + ".General", 10);
-				Settings.globals.setProperty("Value." + i + ".Wolf", 7);
-				Settings.globals.setProperty("Value." + i + ".Arrow", 4);
-				Settings.globals.setProperty("Value." + i + ".283", 20);
-			}
-			
+		{	
 			Settings.globals.setProperty("MinimumPointsPlace1", 1);
 			Settings.globals.setProperty("MinimumPointsPlace2", 1);
 			Settings.globals.setProperty("MinimumPointsPlace3", 1);
