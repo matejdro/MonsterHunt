@@ -310,7 +310,21 @@ private static Connection connection;
                 conn.commit();
         } catch (SQLException e) {
             MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt]: Error while creating tables! - " + e.getMessage());
+        }
     }
-    }
+	
+	public static void initMetrics()
+	{
+		try {
+		    // create a new metrics object
+		    Metrics metrics = new Metrics();
+
+		    // 'this' in this context is the Plugin object
+		    metrics.beginMeasuringPlugin(MonsterHunt.instance);
+		} catch (IOException e) {
+			MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt]: Error while activating Metrics! - " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 	
 }

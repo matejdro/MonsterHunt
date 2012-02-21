@@ -47,8 +47,7 @@ public class MonsterHunt extends JavaPlugin {
 		
 	InputOutput.LoadSettings();
 	InputOutput.PrepareDB();
-	
-	
+
 	
 	getServer().getPluginManager().registerEvents(entityListener, this);
 	log.log(Level.INFO, "[MonsterHunt] " + this + " Loaded!");
@@ -62,6 +61,8 @@ public class MonsterHunt extends JavaPlugin {
 	commands.put("huntstatus", new HuntStatusCommand());
 	commands.put("huntzone", new HuntZoneCommand());
 	commands.put("hunttele", new HuntTeleCommand());
+	
+	InputOutput.initMetrics();
 	
 	HuntWorldManager.timer();
 
