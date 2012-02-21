@@ -6,19 +6,21 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.logging.Level;
 
+import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
-
-import com.nijikokun.register.payment.Method.MethodAccount;
-import com.nijikokun.register.payment.Methods;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class RewardManager {
 
 	private static MonsterHunt plugin = MonsterHunt.instance;
-		
+    public static Economy economy = null;
+	
 	public static void RewardWinners(MonsterHuntWorld world)
 	{
 		
@@ -195,18 +197,17 @@ public class RewardManager {
 	}
 	private static String iConomyReward(String player, int number)
 	{		
-		Plugin test = plugin.getServer().getPluginManager().getPlugin("Register");
+		Plugin test = plugin.getServer().getPluginManager().getPlugin("Vault");
 		if(test != null) {
-			if (Methods.getMethod() == null)
+			if (!setupEconomy())
 			{
-				MonsterHunt.log.log(Level.WARNING, "[MonsterHunt] You have economy rewards enabled, but don't have any economy plugin installed! Some players may not get their reward! See http://dev.bukkit.org/server-mods/register/");
+				MonsterHunt.log.log(Level.WARNING, "[MonsterHunt] You have economy rewards enabled, but don't have any economy plugin installed!");
 				return "";
 			}
-			MethodAccount account = Methods.getMethod().getAccount(player);
-			account.add(number);
-			return Methods.getMethod().format(number);
+			economy.depositPlayer(player, number);
+			return economy.format(number);
 		} else {
-			MonsterHunt.log.log(Level.WARNING, "[MonsterHunt] You have economy rewards enabled, but don't have Register plugin installed! Some players may not get their reward! See http://dev.bukkit.org/server-mods/register/");
+			MonsterHunt.log.log(Level.WARNING, "[MonsterHunt] You have economy rewards enabled, but don't have Vault plugin installed! Some players may not get their reward! See http://dev.bukkit.org/server-mods/vault/");
 			return "";
 		}
 	}
@@ -370,6 +371,18 @@ public class RewardManager {
             // Standard usage of addItem
             players.getInventory().addItem(new ItemStack(ID, amount, dur));
         }
+    }
+	
+	private static Boolean setupEconomy()
+    {
+		if (economy != null) return true;
+		
+        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
     }
 	
 }

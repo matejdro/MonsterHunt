@@ -3,7 +3,7 @@ main: com.matejdro.bukkit.monsterhunt.MonsterHunt
 version: 1.5
 website: http://dev.bukkit.org/server-mods/monsterhunt/
 author: matejdro
-softdepend: [Register, Permissions]
+softdepend: [Vault, Permissions]
 commands:
     hunt:
         description: Sign up for the hunt.
