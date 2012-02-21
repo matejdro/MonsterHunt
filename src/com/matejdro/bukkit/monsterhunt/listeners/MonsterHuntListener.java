@@ -33,6 +33,7 @@ import org.bukkit.entity.Squid;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -44,22 +45,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
 import com.matejdro.bukkit.monsterhunt.HuntZone;
 import com.matejdro.bukkit.monsterhunt.HuntZoneCreation;
-import com.matejdro.bukkit.monsterhunt.MonsterHunt;
 import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
 import com.matejdro.bukkit.monsterhunt.Setting;
 import com.matejdro.bukkit.monsterhunt.Settings;
 import com.matejdro.bukkit.monsterhunt.Util;
 
 public class MonsterHuntListener implements Listener {
-private MonsterHunt plugin;
 	//HashMap<Integer, Player> lastHits = new HashMap<Integer, Player>();
 	//HashMap<Integer, Integer> lastHitCauses = new HashMap<Integer, Integer>();
-	public MonsterHuntListener(MonsterHunt instance)
-	{
-		plugin = instance;
-	}
-	
 		
+	@EventHandler()
 	public void onEntityDeath (EntityDeathEvent event) {
 		if (event.getEntity() instanceof Player)
 		{
@@ -324,6 +319,7 @@ private MonsterHunt plugin;
 				}
 	}
 	
+	@EventHandler()
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (event.getEntity() instanceof Creature)
 		{
@@ -364,6 +360,7 @@ private MonsterHunt plugin;
 
 	}
 	
+	@EventHandler()
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().getItemInHand().getTypeId() == Settings.globals.getInt(Setting.SelectionTool.getString(), 268))
 		{

@@ -69,7 +69,7 @@ public class MonsterHunt extends JavaPlugin {
 	
 	private void initialize()
 	{
-		entityListener = new MonsterHuntListener(this);
+		entityListener = new MonsterHuntListener();
 		instance = this;
 		
 	}

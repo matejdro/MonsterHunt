@@ -1,6 +1,8 @@
 package com.matejdro.bukkit.monsterhunt;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,7 +14,8 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class InputOutput {
 private static Connection connection;
@@ -182,15 +185,15 @@ private static Connection connection;
 			MonsterHunt.log.log(Level.SEVERE, "[MonsterHunt]: Unable to create plugins/MontsterHunt/ directory");
 			}
 			}
-		Settings.globals = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
+		Settings.globals = new YamlConfiguration();
 
 		LoadDefaults();
 				
 		for (String n : Settings.globals.getString("EnabledWorlds").split(","))
 		{
 					MonsterHuntWorld mw = new MonsterHuntWorld(n);
-					Configuration config = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator,n + ".yml"));
-					Settings settings = new Settings(config);
+					YamlConfiguration config = new YamlConfiguration();
+					Settings settings = new Settings(config, new File("plugins" + File.separator + "MonsterHunt" + File.separator,n + ".yml"));
 					mw.settings = settings;
 				
 					HuntWorldManager.worlds.put(n, mw);
@@ -206,8 +209,8 @@ private static Connection connection;
 		
 		//Create zone world
 		MonsterHuntWorld mw = new MonsterHuntWorld(world.getName());
-		Configuration config = new Configuration(new File("plugins" + File.separator + "MonsterHunt" + File.separator + "zone.yml"));
-		Settings settings = new Settings(config);
+		YamlConfiguration config = new YamlConfiguration();
+		Settings settings = new Settings(config, new File("plugins" + File.separator + "MonsterHunt" + File.separator + "zone.yml"));
 		mw.settings = settings;
 	
 		HuntWorldManager.HuntZoneWorld = mw;
@@ -216,55 +219,76 @@ private static Connection connection;
 	
 	public static void LoadDefaults()
 	{
-		Settings.globals.load();
+		try {
+			Settings.globals.load(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InvalidConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		for (String i : new String[]{"Zombie", "Skeleton", "Creeper", "Spider", "Ghast", "Slime", "ZombiePigman", "Giant", "TamedWolf", "WildWolf", "ElectrifiedCreeper", "Player", "Enderman", "Silverfish", "CaveSpider", "EnderDragon", "MagmaCube", "Blaze"})
 		{
-			if (Settings.globals.getProperty("Value." + i) != null) continue;
+			if (Settings.globals.get("Value." + i) != null) continue;
 			
-			Settings.globals.setProperty("Value." + i + ".General", 10);
-			Settings.globals.setProperty("Value." + i + ".Wolf", 7);
-			Settings.globals.setProperty("Value." + i + ".Arrow", 4);
-			Settings.globals.setProperty("Value." + i + ".Snowball", 20);
-			Settings.globals.setProperty("Value." + i + ".283", 20);
+			Settings.globals.set("Value." + i + ".General", 10);
+			Settings.globals.set("Value." + i + ".Wolf", 7);
+			Settings.globals.set("Value." + i + ".Arrow", 4);
+			Settings.globals.set("Value." + i + ".Snowball", 20);
+			Settings.globals.set("Value." + i + ".283", 20);
 		}
 		
 		for (String i : new String[]{"MushroomCow", "Chicken", "Cow", "Pig", "Sheep", "SnowGolem", "Squid", "Villager"})
 		{
-			if (Settings.globals.getProperty("Value." + i) != null) continue;
+			if (Settings.globals.get("Value." + i) != null) continue;
 			
-			Settings.globals.setProperty("Value." + i + ".General", 0);
+			Settings.globals.set("Value." + i + ".General", 0);
 		}
 
 		
 		if (!new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt").exists()) 
 		{	
-			Settings.globals.setProperty("MinimumPointsPlace1", 1);
-			Settings.globals.setProperty("MinimumPointsPlace2", 1);
-			Settings.globals.setProperty("MinimumPointsPlace3", 1);
-			Settings.globals.setProperty("Rewards.RewardParametersPlace1", "3 3");
-			Settings.globals.setProperty("Rewards.RewardParametersPlace2", "3 2");
-			Settings.globals.setProperty("Rewards.RewardParametersPlace3", "3 1");
+			Settings.globals.set("MinimumPointsPlace1", 1);
+			Settings.globals.set("MinimumPointsPlace2", 1);
+			Settings.globals.set("MinimumPointsPlace3", 1);
+			Settings.globals.set("Rewards.RewardParametersPlace1", "3 3");
+			Settings.globals.set("Rewards.RewardParametersPlace2", "3 2");
+			Settings.globals.set("Rewards.RewardParametersPlace3", "3 1");
 		}
 		
 				
 		for (Setting s : Setting.values())
     	{
-    		if (s.writeDefault() && Settings.globals.getProperty(s.getString()) == null) Settings.globals.setProperty(s.getString(), s.getDefault());
+    		if (s.writeDefault() && Settings.globals.get(s.getString()) == null) Settings.globals.set(s.getString(), s.getDefault());
     	}
 	
-		Settings.globals.save();
+		try {
+			Settings.globals.save(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
 	public static void saveZone()
 	{
-		Settings.globals.setProperty("HuntZone.FirstCorner", String.valueOf(HuntZone.corner1.getBlockX()) + "," + String.valueOf(HuntZone.corner1.getBlockY()) + "," + String.valueOf(HuntZone.corner1.getBlockZ()));
-		Settings.globals.setProperty("HuntZone.SecondCorner", String.valueOf(HuntZone.corner2.getBlockX()) + "," + String.valueOf(HuntZone.corner2.getBlockY()) + "," + String.valueOf(HuntZone.corner2.getBlockZ()));
-		Settings.globals.setProperty("HuntZone.TeleportLocation", String.valueOf(HuntZone.teleport.getX()) + "," + String.valueOf(HuntZone.teleport.getY()) + "," + String.valueOf(HuntZone.teleport.getZ()));
-		Settings.globals.setProperty("HuntZone.World", HuntZone.teleport.getWorld().getName());
+		Settings.globals.set("HuntZone.FirstCorner", String.valueOf(HuntZone.corner1.getBlockX()) + "," + String.valueOf(HuntZone.corner1.getBlockY()) + "," + String.valueOf(HuntZone.corner1.getBlockZ()));
+		Settings.globals.set("HuntZone.SecondCorner", String.valueOf(HuntZone.corner2.getBlockX()) + "," + String.valueOf(HuntZone.corner2.getBlockY()) + "," + String.valueOf(HuntZone.corner2.getBlockZ()));
+		Settings.globals.set("HuntZone.TeleportLocation", String.valueOf(HuntZone.teleport.getX()) + "," + String.valueOf(HuntZone.teleport.getY()) + "," + String.valueOf(HuntZone.teleport.getZ()));
+		Settings.globals.set("HuntZone.World", HuntZone.teleport.getWorld().getName());
 		
-		Settings.globals.save();
+		try {
+			Settings.globals.save(new File("plugins" + File.separator + "MonsterHunt" + File.separator, "global.txt"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 		
 	public static void PrepareDB()
