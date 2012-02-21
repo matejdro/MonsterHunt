@@ -8,7 +8,6 @@ import javax.swing.Timer;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,13 +19,11 @@ import com.matejdro.bukkit.monsterhunt.commands.HuntStatusCommand;
 import com.matejdro.bukkit.monsterhunt.commands.HuntStopCommand;
 import com.matejdro.bukkit.monsterhunt.commands.HuntTeleCommand;
 import com.matejdro.bukkit.monsterhunt.commands.HuntZoneCommand;
-import com.matejdro.bukkit.monsterhunt.listeners.MonsterHuntEntityListener;
-import com.matejdro.bukkit.monsterhunt.listeners.MonsterHuntPlayerListener;
+import com.matejdro.bukkit.monsterhunt.listeners.MonsterHuntListener;
 
 public class MonsterHunt extends JavaPlugin {
 	public static Logger log = Logger.getLogger("Minecraft");
-	private MonsterHuntEntityListener EntityListener;
-	private MonsterHuntPlayerListener PlayerListener;
+	private MonsterHuntListener entityListener;
 	Timer timer;
 	
 	//public static HashMap<String,Integer> highscore = new HashMap<String,Integer>();
@@ -50,11 +47,11 @@ public class MonsterHunt extends JavaPlugin {
 		
 	InputOutput.LoadSettings();
 	InputOutput.PrepareDB();
-		
-	getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, EntityListener, Event.Priority.Monitor, this);
-	getServer().getPluginManager().registerEvent(Event.Type.CREATURE_SPAWN, EntityListener, Event.Priority.Monitor, this);
-	getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, PlayerListener, Event.Priority.Monitor, this);
-	log.log(Level.INFO, "[MonsterHunt] MonsterHunt Loaded!");
+	
+	
+	
+	getServer().getPluginManager().registerEvents(entityListener, this);
+	log.log(Level.INFO, "[MonsterHunt] " + this + " Loaded!");
 	
 	permissions = this.getServer().getPluginManager().getPlugin("Permissions");
 	
@@ -72,8 +69,7 @@ public class MonsterHunt extends JavaPlugin {
 	
 	private void initialize()
 	{
-		EntityListener = new MonsterHuntEntityListener(this);
-		PlayerListener = new MonsterHuntPlayerListener();
+		entityListener = new MonsterHuntListener(this);
 		instance = this;
 		
 	}
