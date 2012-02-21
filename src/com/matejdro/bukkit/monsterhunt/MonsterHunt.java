@@ -27,9 +27,7 @@ public class MonsterHunt extends JavaPlugin {
 	Timer timer;
 	
 	//public static HashMap<String,Integer> highscore = new HashMap<String,Integer>();
-	
-	public static Plugin permissions = null;
-	
+		
 	public static MonsterHunt instance;
 	
 	private HashMap<String, BaseCommand> commands = new HashMap<String, BaseCommand>();
@@ -51,9 +49,7 @@ public class MonsterHunt extends JavaPlugin {
 	
 	getServer().getPluginManager().registerEvents(entityListener, this);
 	log.log(Level.INFO, "[MonsterHunt] " + this + " Loaded!");
-	
-	permissions = this.getServer().getPluginManager().getPlugin("Permissions");
-	
+		
 	commands.put("huntstart", new HuntStartCommand());
 	commands.put("huntstop", new HuntStopCommand());
 	commands.put("hunt", new HuntCommand());
