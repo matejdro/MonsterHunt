@@ -1,4 +1,4 @@
-package com.matejdro.bukkit.monsterhunt.listeners;
+package com.matejdro.MonsterHunt.listeners;
 
 import java.util.Map.Entry;
 
@@ -42,13 +42,13 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
-import com.matejdro.bukkit.monsterhunt.HuntZone;
-import com.matejdro.bukkit.monsterhunt.HuntZoneCreation;
-import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
-import com.matejdro.bukkit.monsterhunt.Setting;
-import com.matejdro.bukkit.monsterhunt.Settings;
-import com.matejdro.bukkit.monsterhunt.Util;
+import com.matejdro.MonsterHunt.HuntWorldManager;
+import com.matejdro.MonsterHunt.HuntZone;
+import com.matejdro.MonsterHunt.HuntZoneCreation;
+import com.matejdro.MonsterHunt.MonsterHuntWorld;
+import com.matejdro.MonsterHunt.Setting;
+import com.matejdro.MonsterHunt.Settings;
+import com.matejdro.MonsterHunt.Util;
 
 public class MonsterHuntListener implements Listener {
 	//HashMap<Integer, Player> lastHits = new HashMap<Integer, Player>();

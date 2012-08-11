@@ -1,4 +1,4 @@
-package com.matejdro.bukkit.monsterhunt;
+package com.matejdro.MonsterHunt;
 
 /*
  * Copyright 2011 Tyler Blair. All rights reserved.

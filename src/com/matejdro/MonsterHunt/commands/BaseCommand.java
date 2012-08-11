@@ -1,10 +1,10 @@
-package com.matejdro.bukkit.monsterhunt.commands;
+package com.matejdro.MonsterHunt.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.matejdro.bukkit.monsterhunt.Util;
+import com.matejdro.MonsterHunt.Util;
 
 public abstract class BaseCommand {
 //Command system concept by oliverw92

@@ -1,12 +1,12 @@
-package com.matejdro.bukkit.monsterhunt.commands;
+package com.matejdro.MonsterHunt.commands;
 
 import org.bukkit.command.CommandSender;
 
-import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
-import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
-import com.matejdro.bukkit.monsterhunt.Setting;
-import com.matejdro.bukkit.monsterhunt.Settings;
-import com.matejdro.bukkit.monsterhunt.Util;
+import com.matejdro.MonsterHunt.HuntWorldManager;
+import com.matejdro.MonsterHunt.MonsterHuntWorld;
+import com.matejdro.MonsterHunt.Setting;
+import com.matejdro.MonsterHunt.Settings;
+import com.matejdro.MonsterHunt.Util;
 
 public class HuntStopCommand extends BaseCommand {
 	
