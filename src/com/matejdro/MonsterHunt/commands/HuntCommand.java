@@ -1,12 +1,12 @@
-package com.matejdro.bukkit.monsterhunt.commands;
+package com.matejdro.MonsterHunt.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.matejdro.bukkit.monsterhunt.HuntWorldManager;
-import com.matejdro.bukkit.monsterhunt.MonsterHuntWorld;
-import com.matejdro.bukkit.monsterhunt.Setting;
-import com.matejdro.bukkit.monsterhunt.Util;
+import com.matejdro.MonsterHunt.HuntWorldManager;
+import com.matejdro.MonsterHunt.MonsterHuntWorld;
+import com.matejdro.MonsterHunt.Setting;
+import com.matejdro.MonsterHunt.Util;
 
 public class HuntCommand extends BaseCommand {
 	

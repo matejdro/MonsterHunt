@@ -1,6 +1,6 @@
 name: MonsterHunt
-main: com.matejdro.bukkit.monsterhunt.MonsterHunt
-version: 1.5.1
+main: com.matejdro.bukkit.MonsterHunt
+version: 1.6.0
 website: http://dev.bukkit.org/server-mods/monsterhunt/
 author: matejdro
 softdepend: [Vault, Permissions]

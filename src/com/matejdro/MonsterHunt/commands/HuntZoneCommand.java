@@ -1,9 +1,9 @@
-package com.matejdro.bukkit.monsterhunt.commands;
+package com.matejdro.MonsterHunt.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.matejdro.bukkit.monsterhunt.HuntZoneCreation;
+import com.matejdro.MonsterHunt.HuntZoneCreation;
 
 public class HuntZoneCommand extends BaseCommand {
 	

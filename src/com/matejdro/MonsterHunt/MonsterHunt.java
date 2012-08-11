@@ -1,4 +1,4 @@
-package com.matejdro.bukkit.monsterhunt;
+package com.matejdro.MonsterHunt;
 
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -10,15 +10,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.matejdro.bukkit.monsterhunt.commands.BaseCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntScoreCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntStartCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntStatusCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntStopCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntTeleCommand;
-import com.matejdro.bukkit.monsterhunt.commands.HuntZoneCommand;
-import com.matejdro.bukkit.monsterhunt.listeners.MonsterHuntListener;
+import com.matejdro.MonsterHunt.commands.BaseCommand;
+import com.matejdro.MonsterHunt.commands.HuntCommand;
+import com.matejdro.MonsterHunt.commands.HuntScoreCommand;
+import com.matejdro.MonsterHunt.commands.HuntStartCommand;
+import com.matejdro.MonsterHunt.commands.HuntStatusCommand;
+import com.matejdro.MonsterHunt.commands.HuntStopCommand;
+import com.matejdro.MonsterHunt.commands.HuntTeleCommand;
+import com.matejdro.MonsterHunt.commands.HuntZoneCommand;
+import com.matejdro.MonsterHunt.listeners.MonsterHuntListener;
 
 public class MonsterHunt extends JavaPlugin {
 	public static Logger log = Logger.getLogger("Minecraft");

@@ -1,12 +1,12 @@
-package com.matejdro.bukkit.monsterhunt.commands;
+package com.matejdro.MonsterHunt.commands;
 
 import java.util.LinkedHashMap;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.matejdro.bukkit.monsterhunt.InputOutput;
-import com.matejdro.bukkit.monsterhunt.Util;
+import com.matejdro.MonsterHunt.InputOutput;
+import com.matejdro.MonsterHunt.Util;
 
 public class HuntScoreCommand extends BaseCommand {
 	

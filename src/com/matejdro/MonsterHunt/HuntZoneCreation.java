@@ -1,4 +1,4 @@
-package com.matejdro.bukkit.monsterhunt;
+package com.matejdro.MonsterHunt;
 
 import java.util.HashMap;
 
